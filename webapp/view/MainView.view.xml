@@ -325,6 +325,34 @@
                     </ObjectPageSubSection>
                 </subSections>
             </ObjectPageSection>
+            <ObjectPageSection id="OPS_LongTexts" title="Material Long Texts" visible="{= !!${TemplateMat} }">
+                <subSections>
+                    <ObjectPageSubSection id="OPSS_LongTexts">
+                        <m:VBox id="VB_Texts" class="sapUiSmallMargin">
+                            <m:IconTabBar 
+                                id="ITB_LongTexts" 
+                                expandable="false" 
+                                applyContentPadding="false"
+                                items="{to_LongTexts}">
+                                <m:items>
+                                    <m:IconTabFilter 
+                                        id="ITF_Dynamic" 
+                                        text="{Tdtext}" 
+                                        icon="sap-icon://notes">
+                                        <m:TextArea 
+                                            id="txtDynamicContent" 
+                                            value="{TextString}" 
+                                            rows="10" 
+                                            width="100%" 
+                                            growing="true" 
+                                            placeholder="Enter text here..." />
+                                    </m:IconTabFilter>
+                                </m:items>
+                            </m:IconTabBar>
+                        </m:VBox>
+                    </ObjectPageSubSection>
+                </subSections>
+            </ObjectPageSection>
         </sections>
     </ObjectPageLayout>
 </mvc:View>

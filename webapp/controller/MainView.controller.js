@@ -30,7 +30,7 @@ sap.ui.define([
             oView.bindElement({
                 path: sPath,
                 parameters: {
-                    expand: "to_Plants,to_Valuations"
+                    expand: "to_Plants,to_Valuations,to_LongTexts"
                 },
                 events: {
                     dataRequested: function () {
@@ -39,13 +39,13 @@ sap.ui.define([
                     dataReceived: function (oData) {
                         oView.setBusy(false);
                         if (!oData.getParameter("data")) {
-                            MessageBox.error("Material '" + sSelectedValue + "' not found.", {
+                          /*  MessageBox.error("Material '" + sSelectedValue + "' not found.", {
                                 title: "Error",
                                 onClose: function () {
                                     oView.byId("materialInput7").setValue("");
                                     oView.byId("materialInput7").focus();
-                                }
-                            });
+                                } 
+                            });*/
                             return;
                         }
                         oView.getModel().updateBindings(true);
