@@ -1,0 +1,131 @@
+{
+  "_version": "1.53.0",
+  "sap.app": {
+    "id": "cos.cmds.qmc.cmdsqmc",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "0.0.1"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "resources": "resources.json",
+    "sourceTemplate": {
+      "id": "@sap/generator-fiori:basic",
+      "version": "1.20.2",
+      "toolsId": "a84a42da-60a7-4619-9326-cace6640bb0a"
+    },
+    "dataSources": {
+      "COS_QMC_ODATA_ANNO_MDL": {
+        "uri": "/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='%2FCOS%2FQMC_ODATA_ANNO_MDL',Version='0001')/$value/",
+        "type": "ODataAnnotation",
+        "settings": {
+          "localUri": "localService/mainService/COS_QMC_ODATA_ANNO_MDL.xml"
+        }
+      },
+      "mainService": {
+        "uri": "/sap/opu/odata/COS/QMC_ODATA_SRV/",
+        "type": "OData",
+        "settings": {
+          "annotations": [
+              "COS_QMC_ODATA_ANNO_MDL",
+              "localAnnotations"
+          ],
+          "localUri": "localService/mainService/metadata.xml",
+          "odataVersion": "2.0"
+        }
+      },
+      "localAnnotations": {
+        "uri": "annotations/annotations.xml",
+        "type": "ODataAnnotation"
+ 
+        }
+    }
+   
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "flexEnabled": true,
+    "dependencies": {
+      "minUI5Version": "1.114.0",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "cos.cmds.qmc.cmdsqmc.i18n.i18n"
+        }
+      },
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {}
+      }
+    },
+    "resources": {
+      "css": [
+        {
+          "uri": "css/style.css"
+        }
+      ]
+    },
+    "routing": {
+      "config": {
+        "routerClass": "sap.m.routing.Router",
+        "viewType": "XML",
+        "async": true,
+        "viewPath": "cos.cmds.qmc.cmdsqmc.view",
+        "controlAggregation": "pages",
+        "controlId": "app",
+        "clearControlAggregation": false
+      },
+      "routes": [
+        {
+          "name": "RouteMainView",
+          "pattern": ":?query:",
+          "target": [
+            "TargetMainView"
+          ]
+        }
+      ],
+      "targets": {
+        "TargetMainView": {
+          "viewType": "XML",
+          "transition": "slide",
+          "clearControlAggregation": false,
+          "viewId": "MainView",
+          "viewName": "MainView"
+        }
+      }
+    },
+    "rootView": {
+      "viewName": "cos.cmds.qmc.cmdsqmc.view.App",
+      "type": "XML",
+      "async": true,
+      "id": "App"
+    }
+  }
+}

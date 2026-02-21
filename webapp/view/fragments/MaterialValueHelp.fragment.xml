@@ -1,0 +1,41 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core">
+    <TableSelectDialog
+        id="materialSelectDialog7"
+        title="Select Material"
+        contentWidth="60%"
+        search=".onValueHelpSearch"
+        confirm=".onValueConfirm"
+        cancel=".onValueHelpClose"
+        items="{
+            path: '/TmplmatShSet',
+            sorter: { path: 'TemplateMat', descending: false },
+            parameters: {
+                countMode: 'None' }
+        }"
+        growing="true"
+        growingThreshold="20">
+        
+        <columns>
+            <m:Column id="Col1.0" xmlns:m="sap.m">
+                <m:header><m:Text id="Text1.0" text="Material Number" /></m:header>
+            </m:Column>
+            <m:Column  id="Col1.1" xmlns:m="sap.m">
+                <m:header><m:Text id="Text1.1" text="Description" /></m:header>
+            </m:Column>
+            <m:Column  id="Col1.2" xmlns:m="sap.m" minScreenWidth="Tablet" demandPopin="true">
+                <m:header><m:Text id="Text1.2" text="Type" /></m:header>
+            </m:Column>
+        </columns>
+
+        <ColumnListItem id="CLI2.0">
+            <cells>
+                <Text id="Text2.1" text="{TemplateMat}" />
+                <Text id="Text2.2" text="{Maktg}" />
+                <Text id="Text2.3" text="{Mtart}" />
+            </cells>
+        </ColumnListItem>
+        
+    </TableSelectDialog>
+</core:FragmentDefinition>

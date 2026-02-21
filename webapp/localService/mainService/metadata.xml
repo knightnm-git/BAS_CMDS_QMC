@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns:sap="http://www.sap.com/Protocols/SAPData">
+    <edmx:Reference Uri="https://S4D.HOSTEDSAP.COM:443/sap/opu/odata/iwfnd/catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_AGGREGATION',Version='0001',SAP__Origin='LOCAL')/$value" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+        <edmx:Include Namespace="Org.OData.Aggregation.V1" Alias="Aggregation"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://S4D.HOSTEDSAP.COM:443/sap/opu/odata/iwfnd/catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_ANALYTICS',Version='0001',SAP__Origin='LOCAL')/$value" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+        <edmx:Include Namespace="com.sap.vocabularies.Analytics.v1" Alias="Analytics"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://S4D.HOSTEDSAP.COM:443/sap/opu/odata/iwfnd/catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_CAPABILITIES',Version='0001',SAP__Origin='LOCAL')/$value" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+        <edmx:Include Namespace="Org.OData.Capabilities.V1" Alias="Capabilities"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://S4D.HOSTEDSAP.COM:443/sap/opu/odata/iwfnd/catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_CODELIST',Version='0001',SAP__Origin='LOCAL')/$value" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+        <edmx:Include Namespace="com.sap.vocabularies.CodeList.v1" Alias="SAP__CodeList"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://S4D.HOSTEDSAP.COM:443/sap/opu/odata/iwfnd/catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMON',Version='0001',SAP__Origin='LOCAL')/$value" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+        <edmx:Include Namespace="com.sap.vocabularies.Common.v1" Alias="Common"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://S4D.HOSTEDSAP.COM:443/sap/opu/odata/iwfnd/catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMUNICATION',Version='0001',SAP__Origin='LOCAL')/$value" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+        <edmx:Include Namespace="com.sap.vocabularies.Communication.v1" Alias="Communication"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://S4D.HOSTEDSAP.COM:443/sap/opu/odata/iwfnd/catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_MEASURES',Version='0001',SAP__Origin='LOCAL')/$value" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+        <edmx:Include Namespace="Org.OData.Measures.V1" Alias="Measures"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://S4D.HOSTEDSAP.COM:443/sap/opu/odata/iwfnd/catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_PERSONALDATA',Version='0001',SAP__Origin='LOCAL')/$value" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+        <edmx:Include Namespace="com.sap.vocabularies.PersonalData.v1" Alias="PersonalData"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://S4D.HOSTEDSAP.COM:443/sap/opu/odata/iwfnd/catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_UI',Version='0001',SAP__Origin='LOCAL')/$value" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+        <edmx:Include Namespace="com.sap.vocabularies.UI.v1" Alias="UI"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://S4D.HOSTEDSAP.COM:443/sap/opu/odata/iwfnd/catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_VALIDATION',Version='0001',SAP__Origin='LOCAL')/$value" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+        <edmx:Include Namespace="Org.OData.Validation.V1" Alias="Validation"/>
+    </edmx:Reference>
+    <edmx:DataServices m:DataServiceVersion="2.0">
+        <Schema Namespace="COS.QMC_ODATA_SRV" xml:lang="en" sap:schema-version="1" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+            <EntityType Name="MaterialHeader" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="TemplateMat"/>
+                </Key>
+                <Property Name="TemplateMat" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:label="Template Material" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="TestMode" Type="Edm.Boolean" Nullable="false" sap:unicode="false" sap:label="Test Mode" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Matnr" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:label="Material" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="MatlDesc" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:label="Description" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="MatlType" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:label="Material Type" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="MatlGroup" Type="Edm.String" Nullable="false" MaxLength="9" sap:unicode="false" sap:label="Material Group" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="MatlGroupDesc" Type="Edm.String" Nullable="false" MaxLength="20" sap:unicode="false" sap:label="Matl Grp Desc." sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="BaseUom" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:label="Base Unit" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false" sap:semantics="unit-of-measure"/>
+                <Property Name="GrossWt" Type="Edm.Decimal" Nullable="false" Precision="13" Scale="3" sap:unicode="false" sap:unit="UnitOfWt" sap:label="Gross Weight" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="NetWeight" Type="Edm.Decimal" Nullable="false" Precision="13" Scale="3" sap:unicode="false" sap:unit="UnitOfWt" sap:label="Net Weight" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="UnitOfWt" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:label="Unit of Weight" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false" sap:semantics="unit-of-measure"/>
+                <Property Name="MfrNo" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Manufacturer" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ManuMat" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:label="Mfr Part Number" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="BatchMgmt" Type="Edm.Boolean" Nullable="false" sap:unicode="false" sap:label="Batch Mgmt Rqt" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Lifnr" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Supplier" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Idnlf" Type="Edm.String" Nullable="false" MaxLength="35" sap:unicode="false" sap:label="Supp. Mat. No." sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="PurValkey" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:label="Purch.value key" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Volume" Type="Edm.Decimal" Nullable="false" Precision="13" Scale="3" sap:unicode="false" sap:unit="Volumeunit" sap:label="Volume" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Volumeunit" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:label="Volume Unit" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false" sap:semantics="unit-of-measure"/>
+                <Property Name="Container" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="Container" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="StorConds" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="Stor.conditions" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="TempConds" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="Temperature" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="TransGrp" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:label="Trans. Group" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Division" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="Division" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="LabelForm" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="Label form" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="PurStatus" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="X-Plant Status" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="SalStatus" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="X-DChain status" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Minremlife" Type="Edm.Decimal" Nullable="false" Precision="4" Scale="0" sap:unicode="false" sap:label="Rem. Shelf Life" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ShelfLife" Type="Edm.Decimal" Nullable="false" Precision="4" Scale="0" sap:unicode="false" sap:label="Tot. shelf life" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="IndSector" Type="Edm.String" Nullable="false" MaxLength="1" sap:unicode="false" sap:label="Industry" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <NavigationProperty Name="to_LongTexts" Relationship="COS.QMC_ODATA_SRV.MaterialToLongTexts" FromRole="FromRole_MaterialToLongTexts" ToRole="ToRole_MaterialToLongTexts"/>
+                <NavigationProperty Name="to_Plants" Relationship="COS.QMC_ODATA_SRV.MaterialToPlants" FromRole="FromRole_MaterialToPlants" ToRole="ToRole_MaterialToPlants"/>
+                <NavigationProperty Name="to_Valuations" Relationship="COS.QMC_ODATA_SRV.MaterialToValuations" FromRole="FromRole_MaterialToValuations" ToRole="ToRole_MaterialToValuations"/>
+            </EntityType>
+            <EntityType Name="PlantDetails" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Material"/>
+                    <PropertyRef Name="Plant"/>
+                </Key>
+                <Property Name="Material" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:label="Material" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="CbxCreate" Type="Edm.Boolean" Nullable="false" sap:unicode="false" sap:label="Checkbox" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Plant" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:label="Plant" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="MrpType" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="MRP Type" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Lotsizekey" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="Lot Sizing Procedure" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="MrpCtrler" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:label="MRP Controller" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="SlocExprc" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:label="Storage Location" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Lgpbe" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Storage Bin" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="PurStatus" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="Material Status" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="AbcId" Type="Edm.String" Nullable="false" MaxLength="1" sap:unicode="false" sap:label="ABC Indicator" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="PurGroup" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:label="Purch. Group" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="PlndDelry" Type="Edm.Decimal" Nullable="false" Precision="3" Scale="0" sap:unicode="false" sap:label="Pl. Deliv. Time" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="GrPrTime" Type="Edm.Decimal" Nullable="false" Precision="3" Scale="0" sap:unicode="false" sap:label="GR proc. time" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ProcType" Type="Edm.String" Nullable="false" MaxLength="1" sap:unicode="false" sap:label="Procurement" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Spproctype" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="Procurement" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ReorderPt" Type="Edm.Decimal" Nullable="false" Precision="13" Scale="3" sap:unicode="false" sap:label="Reorder Point" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="RoundVal" Type="Edm.Decimal" Nullable="false" Precision="13" Scale="3" sap:unicode="false" sap:label="Rounding value" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="BatchMgmt" Type="Edm.Boolean" Nullable="false" sap:unicode="false" sap:label="Batch Mgmt Rqt(Plnt)" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="AutoPOrd" Type="Edm.Boolean" Nullable="false" sap:unicode="false" sap:label="Autom. PO" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ProfitCtr" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Profit Center" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="IssStLoc" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:label="Storage Location" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="MrpGroup" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:label="MRP Group" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <NavigationProperty Name="MaterialHeader" Relationship="COS.QMC_ODATA_SRV.MaterialToPlants" FromRole="ToRole_MaterialToPlants" ToRole="FromRole_MaterialToPlants"/>
+            </EntityType>
+            <EntityType Name="ValuationDetails" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Material"/>
+                    <PropertyRef Name="ValArea"/>
+                    <PropertyRef Name="ValType"/>
+                </Key>
+                <Property Name="Material" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:label="Material" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ValArea" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:label="Valuation Area" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ValType" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Valuation Type" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ValCat" Type="Edm.String" Nullable="false" MaxLength="1" sap:unicode="false" sap:label="Valuation Cat." sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="PriceCtrl" Type="Edm.String" Nullable="false" MaxLength="1" sap:unicode="false" sap:label="Price control" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="MovingPr" Type="Edm.Decimal" Nullable="false" Precision="12" Scale="3" sap:unicode="false" sap:unit="Currency" sap:label="Moving price" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="StdPrice" Type="Edm.Decimal" Nullable="false" Precision="12" Scale="3" sap:unicode="false" sap:unit="Currency" sap:label="Standard price" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Currency" Type="Edm.String" Nullable="false" MaxLength="5" sap:unicode="false" sap:label="Currency" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false" sap:semantics="currency-code"/>
+                <Property Name="PriceUnit" Type="Edm.Decimal" Nullable="false" Precision="5" Scale="0" sap:unicode="false" sap:label="Price unit" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ValClass" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:label="Valuation Class" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <NavigationProperty Name="MaterialHeader" Relationship="COS.QMC_ODATA_SRV.MaterialToValuations" FromRole="ToRole_MaterialToValuations" ToRole="FromRole_MaterialToValuations"/>
+            </EntityType>
+            <EntityType Name="LongText" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Material"/>
+                    <PropertyRef Name="TextId"/>
+                    <PropertyRef Name="LineNo"/>
+                </Key>
+                <Property Name="Material" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:label="Material" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="TextId" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:label="Text ID" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Tdtext" Type="Edm.String" Nullable="false" MaxLength="30" sap:unicode="false" sap:label="Description" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="LineNo" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:label="Line number" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="FormatCol" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="Tag column" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="TextLine" Type="Edm.String" Nullable="false" MaxLength="132" sap:unicode="false" sap:label="Text Line" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <NavigationProperty Name="MaterialHeader" Relationship="COS.QMC_ODATA_SRV.MaterialToLongTexts" FromRole="ToRole_MaterialToLongTexts" ToRole="FromRole_MaterialToLongTexts"/>
+            </EntityType>
+            <EntityType Name="xCOSxQMC_I_RECENTMATSType" sap:label="CMDS QMC - Recent Materials" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Material"/>
+                </Key>
+                <Property Name="Material" Type="Edm.String" Nullable="false" MaxLength="40" sap:display-format="UpperCase" sap:label="Material" sap:quickinfo="Material Number"/>
+                <Property Name="MatType" Type="Edm.String" MaxLength="4" sap:display-format="UpperCase" sap:label="Material Type"/>
+                <Property Name="Description" Type="Edm.String" MaxLength="40" sap:label="Material Description"/>
+                <Property Name="BaseUOM" Type="Edm.String" MaxLength="3" sap:label="Base Unit of Measure" sap:semantics="unit-of-measure"/>
+                <Property Name="MatGroup" Type="Edm.String" MaxLength="9" sap:display-format="UpperCase" sap:label="Material Group"/>
+                <Property Name="CreatedOn" Type="Edm.DateTime" Precision="0" sap:display-format="Date" sap:label="Created On"/>
+                <Property Name="CreatedOnTime" Type="Edm.Time" Precision="0" sap:label="Created At Time" sap:quickinfo="Time of Creation"/>
+            </EntityType>
+            <Association Name="MaterialToValuations" sap:content-version="1">
+                <End Type="COS.QMC_ODATA_SRV.MaterialHeader" Multiplicity="1" Role="FromRole_MaterialToValuations"/>
+                <End Type="COS.QMC_ODATA_SRV.ValuationDetails" Multiplicity="*" Role="ToRole_MaterialToValuations"/>
+                <ReferentialConstraint>
+                    <Principal Role="FromRole_MaterialToValuations">
+                        <PropertyRef Name="TemplateMat"/>
+                    </Principal>
+                    <Dependent Role="ToRole_MaterialToValuations">
+                        <PropertyRef Name="Material"/>
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <Association Name="MaterialToLongTexts" sap:content-version="1">
+                <End Type="COS.QMC_ODATA_SRV.MaterialHeader" Multiplicity="1" Role="FromRole_MaterialToLongTexts"/>
+                <End Type="COS.QMC_ODATA_SRV.LongText" Multiplicity="*" Role="ToRole_MaterialToLongTexts"/>
+                <ReferentialConstraint>
+                    <Principal Role="FromRole_MaterialToLongTexts">
+                        <PropertyRef Name="TemplateMat"/>
+                    </Principal>
+                    <Dependent Role="ToRole_MaterialToLongTexts">
+                        <PropertyRef Name="Material"/>
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <Association Name="MaterialToPlants" sap:content-version="1">
+                <End Type="COS.QMC_ODATA_SRV.MaterialHeader" Multiplicity="1" Role="FromRole_MaterialToPlants"/>
+                <End Type="COS.QMC_ODATA_SRV.PlantDetails" Multiplicity="*" Role="ToRole_MaterialToPlants"/>
+                <ReferentialConstraint>
+                    <Principal Role="FromRole_MaterialToPlants">
+                        <PropertyRef Name="TemplateMat"/>
+                    </Principal>
+                    <Dependent Role="ToRole_MaterialToPlants">
+                        <PropertyRef Name="Material"/>
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <EntityContainer Name="COS_QMC_ODATA_SRV_Entities" m:IsDefaultEntityContainer="true" sap:message-scope-supported="true" sap:supported-formats="atom json xlsx">
+                <EntitySet Name="xCOSxQMC_I_RECENTMATS" EntityType="COS.QMC_ODATA_SRV.xCOSxQMC_I_RECENTMATSType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
+                <EntitySet Name="MaterialHeaderSet" EntityType="COS.QMC_ODATA_SRV.MaterialHeader" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
+                <EntitySet Name="PlantDetailsSet" EntityType="COS.QMC_ODATA_SRV.PlantDetails" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
+                <EntitySet Name="ValuationDetailsSet" EntityType="COS.QMC_ODATA_SRV.ValuationDetails" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
+                <EntitySet Name="LongTextSet" EntityType="COS.QMC_ODATA_SRV.LongText" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
+                <AssociationSet Name="MaterialToLongTextsSet" Association="COS.QMC_ODATA_SRV.MaterialToLongTexts" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="MaterialHeaderSet" Role="FromRole_MaterialToLongTexts"/>
+                    <End EntitySet="LongTextSet" Role="ToRole_MaterialToLongTexts"/>
+                </AssociationSet>
+                <AssociationSet Name="MaterialToPlantsSet" Association="COS.QMC_ODATA_SRV.MaterialToPlants" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="MaterialHeaderSet" Role="FromRole_MaterialToPlants"/>
+                    <End EntitySet="PlantDetailsSet" Role="ToRole_MaterialToPlants"/>
+                </AssociationSet>
+                <AssociationSet Name="MaterialToValuationsSet" Association="COS.QMC_ODATA_SRV.MaterialToValuations" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="MaterialHeaderSet" Role="FromRole_MaterialToValuations"/>
+                    <End EntitySet="ValuationDetailsSet" Role="ToRole_MaterialToValuations"/>
+                </AssociationSet>
+            </EntityContainer>
+            <Annotation Term="Core.SchemaVersion" String="1.0.0" xmlns="http://docs.oasis-open.org/odata/ns/edm"/>
+            <Annotations Target="COS.QMC_ODATA_SRV.COS_QMC_ODATA_SRV_Entities" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.ApplyMultiUnitBehaviorForSortingAndFiltering" Bool="true"/>
+            </Annotations>
+            <atom:link rel="self" href="https://S4D.HOSTEDSAP.COM:443/sap/opu/odata/cos/QMC_ODATA_SRV/$metadata" xmlns:atom="http://www.w3.org/2005/Atom"/>
+            <atom:link rel="latest-version" href="https://S4D.HOSTEDSAP.COM:443/sap/opu/odata/cos/QMC_ODATA_SRV/$metadata" xmlns:atom="http://www.w3.org/2005/Atom"/>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>

@@ -1,0 +1,11 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+    <TableSelectDialog id="TSD1.0"
+        title="Select"
+        search="onValueHelpSearch"
+        confirm="onValueHelpConfirm"
+        contentWidth="600px"> <columns>
+            <Column id="Col1"><header><Text id="Txt1" text="Code" /></header></Column>
+            <Column id="Col2"><header><Text id="Txt2" text="Description" /></header></Column>
+        </columns>
+    </TableSelectDialog>
+</core:FragmentDefinition>
