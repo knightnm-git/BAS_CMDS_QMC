@@ -29,12 +29,12 @@
                           press="onNavBack" 
                           tooltip="Back"/>
                           <m:Button 
-        id="btnCreate" 
-        icon="sap-icon://create"
-        text="Create New Material" 
-        type="Emphasized" 
-        press="onCreateMaterial"
-        visible="{= !!${TemplateMat} }" />
+                            id="btnCreate" 
+                            icon="sap-icon://create"
+                            text="Create New Material" 
+                            type="Emphasized" 
+                            press="onCreateMaterial"
+                            visible="{= !!${TemplateMat} }" />
                     </navigationActions>
 
             </ObjectPageDynamicHeaderTitle>
@@ -53,12 +53,12 @@
                         valueHelpRequest=".onMaterialValueHelpRequest"
                         change=".onTemplateSelect" />  
                         <m:Button 
-        id="btnReset" 
-        icon="sap-icon://refresh" 
-        type="Transparent" 
-        press="onReset" 
-        tooltip="Clear all data" 
-        class="sapUiTinyMarginBegin" />
+                            id="btnReset" 
+                            icon="sap-icon://refresh" 
+                            type="Transparent" 
+                            press="onReset" 
+                            tooltip="Clear all data" 
+                            class="sapUiTinyMarginBegin" />
                 </m:HBox>
 
                 <m:HBox id="HB1.1"  alignItems="Center">
