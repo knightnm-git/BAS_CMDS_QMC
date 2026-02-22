@@ -371,60 +371,135 @@
                                 visible="{= !!${TemplateMat} }">
                 <subSections>
                     <ObjectPageSubSection id="OPSS2">
-                        <m:Table id="TblPlantDetails" items="{to_Plants}">
-                            <m:columns>
-                                <m:Column id="colCbxCreate"><m:Text id="lblCbxCreate" text="Create for Plant" /></m:Column>
-                                <m:Column id="colPlant"><m:Text id="lblPlant" text="Plant" /></m:Column>
-                                <m:Column id="colMrpType"><m:Text id="lblMrpType" text="MRP Type" /></m:Column>
-                                <m:Column id="colLotsizekey"><m:Text id="lblLotsizekey" text="Lot Size" /></m:Column>
-                                <m:Column id="colMrpCtrler"><m:Text id="lblMrpCtrler" text="MRP Controller" /></m:Column>
-                                <m:Column id="colSlocExprc"><m:Text id="lblSlocExprc" text="SLoc Exprc" /></m:Column>
-                                <m:Column id="colLgpbe"><m:Text id="lblLgpbe" text="Storage Bin" /></m:Column>
-                                <m:Column id="colPurStatus"><m:Text id="lblPurStatus" text="Pur. Status" /></m:Column>
-                                <m:Column id="colAbcId"><m:Text id="lblAbcId" text="ABC ID" /></m:Column>
-                                <m:Column id="colPurGroup"><m:Text id="lblPurGroup" text="Pur. Group" /></m:Column>
-                                <m:Column id="colPlndDelry"><m:Text id="lblPlndDelry" text="Plnd Del. Time" /></m:Column>
-                                <m:Column id="colGrPrTime"><m:Text id="lblGrPrTime" text="GR Time" /></m:Column>
-                                <m:Column id="colProcType"><m:Text id="lblProcType" text="Proc. Type" /></m:Column>
-                                <m:Column id="colSpproctype"><m:Text id="lblSpproctype" text="Spec. Proc" /></m:Column>
-                                <m:Column id="colReorderPt"><m:Text id="lblReorderPt" text="Reorder Pt" /></m:Column>
-                                <m:Column id="colRoundVal"><m:Text id="lblRoundVal" text="Round Val" /></m:Column>
-                                <m:Column id="colBatchMgmt"><m:Text id="lblBatchMgmt" text="Batch Mgmt" /></m:Column>
-                                <m:Column id="colAutoPOrd"><m:Text id="lblAutoPOrd" text="Auto PO" /></m:Column>
-                                <m:Column id="colProfitCtr"><m:Text id="lblProfitCtr" text="Profit Center" /></m:Column>
-                                <m:Column id="colIssStLoc"><m:Text id="lblIssStLoc" text="Issue StLoc" /></m:Column>
-                                <m:Column id="colMrpGroup"><m:Text id="lblMrpGroup" text="MRP Group" /></m:Column>
-                            </m:columns>
-                            <m:items>
-                                <m:ColumnListItem id="cliPlant">
-                                    <m:cells>
-                                        <m:CheckBox id="chkCbxCreate" selected="{CbxCreate}" 
-                                                    editable="{path: 'ui>/isCreateMode', formatter: '.formatIsCreateMode'}" />
-                                        <m:Input id="iptPlant" value="{Plant}" 
-                                                 editable="{parts: [{path: 'fieldControl>/PlantDetails/Plant/editable'}, {path: 'ui>/isCreateMode'}], formatter: '.formatCellEditable'}" />
-                                        <m:Input id="iptMrpType" value="{MrpType}" editable="{parts: [{path: 'fieldControl>/PlantDetails/MrpType/editable'}, {path: 'ui>/isCreateMode'}], formatter: '.formatCellEditable'}" />
-                                        <m:Input id="iptLotsizekey" value="{Lotsizekey}" editable="{parts: [{path: 'fieldControl>/PlantDetails/Lotsizekey/editable'}, {path: 'ui>/isCreateMode'}], formatter: '.formatCellEditable'}" />
-                                        <m:Input id="iptMrpCtrler" value="{MrpCtrler}" editable="{parts: [{path: 'fieldControl>/PlantDetails/MrpCtrler/editable'}, {path: 'ui>/isCreateMode'}], formatter: '.formatCellEditable'}" />
-                                        <m:Input id="iptSlocExprc" value="{SlocExprc}" editable="{parts: [{path: 'fieldControl>/PlantDetails/SlocExprc/editable'}, {path: 'ui>/isCreateMode'}], formatter: '.formatCellEditable'}" />
-                                        <m:Input id="iptLgpbe" value="{Lgpbe}" editable="{path: 'ui>/isCreateMode', formatter: '.formatIsCreateMode'}" />
-                                        <m:Input id="iptPurStatus" value="{PurStatus}" editable="{parts: [{path: 'fieldControl>/PlantDetails/PurStatus/editable'}, {path: 'ui>/isCreateMode'}], formatter: '.formatCellEditable'}" />
-                                        <m:Input id="iptAbcId" value="{AbcId}" editable="{parts: [{path: 'fieldControl>/PlantDetails/AbcId/editable'}, {path: 'ui>/isCreateMode'}], formatter: '.formatCellEditable'}" />
-                                        <m:Input id="iptPurGroup" value="{PurGroup}" editable="{parts: [{path: 'fieldControl>/PlantDetails/PurGroup/editable'}, {path: 'ui>/isCreateMode'}], formatter: '.formatCellEditable'}" />
-                                        <m:Input id="iptPlndDelry" value="{PlndDelry}" editable="{parts: [{path: 'fieldControl>/PlantDetails/PlndDelry/editable'}, {path: 'ui>/isCreateMode'}], formatter: '.formatCellEditable'}" />
-                                        <m:Input id="iptGrPrTime" value="{GrPrTime}" editable="{parts: [{path: 'fieldControl>/PlantDetails/GrPrTime/editable'}, {path: 'ui>/isCreateMode'}], formatter: '.formatCellEditable'}" />
-                                        <m:Input id="iptProcType" value="{ProcType}" editable="{parts: [{path: 'fieldControl>/PlantDetails/ProcType/editable'}, {path: 'ui>/isCreateMode'}], formatter: '.formatCellEditable'}" />
-                                        <m:Input id="iptSpproctype" value="{Spproctype}" editable="{parts: [{path: 'fieldControl>/PlantDetails/Spproctype/editable'}, {path: 'ui>/isCreateMode'}], formatter: '.formatCellEditable'}" />
-                                        <m:Input id="iptReorderPt" value="{ReorderPt}" editable="{parts: [{path: 'fieldControl>/PlantDetails/ReorderPt/editable'}, {path: 'ui>/isCreateMode'}], formatter: '.formatCellEditable'}" />
-                                        <m:Input id="iptRoundVal" value="{RoundVal}" editable="{parts: [{path: 'fieldControl>/PlantDetails/RoundVal/editable'}, {path: 'ui>/isCreateMode'}], formatter: '.formatCellEditable'}" />
-                                        <m:CheckBox id="chkBatchMgmt" selected="{BatchMgmt}" editable="{parts: [{path: 'fieldControl>/PlantDetails/BatchMgmt/editable'}, {path: 'ui>/isCreateMode'}], formatter: '.formatCellEditable'}" />
-                                        <m:CheckBox id="chkAutoPOrd" selected="{AutoPOrd}" editable="{parts: [{path: 'fieldControl>/PlantDetails/AutoPOrd/editable'}, {path: 'ui>/isCreateMode'}], formatter: '.formatCellEditable'}" />
-                                        <m:Input id="iptProfitCtr" value="{ProfitCtr}" editable="{parts: [{path: 'fieldControl>/PlantDetails/ProfitCtr/editable'}, {path: 'ui>/isCreateMode'}], formatter: '.formatCellEditable'}" />
-                                        <m:Input id="iptIssStLoc" value="{IssStLoc}" editable="{parts: [{path: 'fieldControl>/PlantDetails/IssStLoc/editable'}, {path: 'ui>/isCreateMode'}], formatter: '.formatCellEditable'}" />
-                                        <m:Input id="iptMrpGroup" value="{MrpGroup}" editable="{parts: [{path: 'fieldControl>/PlantDetails/MrpGroup/editable'}, {path: 'ui>/isCreateMode'}], formatter: '.formatCellEditable'}" />
-                                    </m:cells>
-                                </m:ColumnListItem>
-                            </m:items>
-                        </m:Table>
+                        <smartTable:SmartTable 
+                            id="STble2" 
+                            entitySet="PlantDetailsSet" 
+                            tableBindingPath="to_Plants" 
+                            header="Plant Details"
+                            showRowCount="true" 
+                            enableAutoBinding="true"
+                            useTablePersonalisation="true"
+                            editable="{ui>/isCreateMode}" 
+                            editTogglable="false"
+                            demandPopin="true">
+                            
+                            <m:Table id="Tbl2.1" sticky="ColumnHeaders">
+                                <m:columns>
+                                    <m:Column id="colCbxCreate" visible="{= ${fieldControl>/PlantDetails/CbxCreate/visible} !== false}">
+                                        <m:customData><core:CustomData id="cdCbxCreate" key="p13nData" value='\{"columnKey": "CbxCreate", "leadingProperty": "CbxCreate"\}' /></m:customData>
+                                        <m:Text id="txtCbxCreate" text="Create for Plant" />
+                                    </m:Column>
+                                    <m:Column id="colPlant" visible="{= ${fieldControl>/PlantDetails/Plant/visible} !== false}">
+                                        <m:customData><core:CustomData id="cdPlant" key="p13nData" value='\{"columnKey": "Plant", "leadingProperty": "Plant", "sortProperty": "Plant"\}' /></m:customData>
+                                        <m:Text id="txtPlant" text="Plant" />
+                                    </m:Column>
+                                    <m:Column id="colMrpType" visible="{= ${fieldControl>/PlantDetails/MrpType/visible} !== false}">
+                                        <m:customData><core:CustomData id="cdMrpType" key="p13nData" value='\{"columnKey": "MrpType", "leadingProperty": "MrpType"\}' /></m:customData>
+                                        <m:Text id="txtMrpType" text="MRP Type" />
+                                    </m:Column>
+                                    <m:Column id="colLotsizekey" visible="{= ${fieldControl>/PlantDetails/Lotsizekey/visible} !== false}">
+                                        <m:customData><core:CustomData id="cdLotsizekey" key="p13nData" value='\{"columnKey": "Lotsizekey", "leadingProperty": "Lotsizekey"\}' /></m:customData>
+                                        <m:Text id="txtLotsizekey" text="Lot Size" />
+                                    </m:Column>
+                                    <m:Column id="colMrpCtrler" visible="{= ${fieldControl>/PlantDetails/MrpCtrler/visible} !== false}">
+                                        <m:customData><core:CustomData id="cdMrpCtrler" key="p13nData" value='\{"columnKey": "MrpCtrler", "leadingProperty": "MrpCtrler"\}' /></m:customData>
+                                        <m:Text id="txtMrpCtrler" text="MRP Controller" />
+                                    </m:Column>
+                                    <m:Column id="colSlocExprc" visible="{= ${fieldControl>/PlantDetails/SlocExprc/visible} !== false}">
+                                        <m:customData><core:CustomData id="cdSlocExprc" key="p13nData" value='\{"columnKey": "SlocExprc", "leadingProperty": "SlocExprc"\}' /></m:customData>
+                                        <m:Text id="txtSlocExprc" text="SLoc Exprc" />
+                                    </m:Column>
+                                    <m:Column id="colLgpbe" visible="{= ${fieldControl>/PlantDetails/Lgpbe/visible} !== false}">
+                                        <m:customData><core:CustomData id="cdLgpbe" key="p13nData" value='\{"columnKey": "Lgpbe", "leadingProperty": "Lgpbe"\}' /></m:customData>
+                                        <m:Text id="txtLgpbe" text="Storage Bin" />
+                                    </m:Column>
+                                    <m:Column id="colPurStatus" visible="{= ${fieldControl>/PlantDetails/PurStatus/visible} !== false}">
+                                        <m:customData><core:CustomData id="cdPurStatus" key="p13nData" value='\{"columnKey": "PurStatus", "leadingProperty": "PurStatus"\}' /></m:customData>
+                                        <m:Text id="txtPurStatus" text="Pur. Status" />
+                                    </m:Column>
+                                    <m:Column id="colAbcId" visible="{= ${fieldControl>/PlantDetails/AbcId/visible} !== false}">
+                                        <m:customData><core:CustomData id="cdAbcId" key="p13nData" value='\{"columnKey": "AbcId", "leadingProperty": "AbcId"\}' /></m:customData>
+                                        <m:Text id="txtAbcId" text="ABC ID" />
+                                    </m:Column>
+                                    <m:Column id="colPurGroup" visible="{= ${fieldControl>/PlantDetails/PurGroup/visible} !== false}">
+                                        <m:customData><core:CustomData id="cdPurGroup" key="p13nData" value='\{"columnKey": "PurGroup", "leadingProperty": "PurGroup"\}' /></m:customData>
+                                        <m:Text id="txtPurGroup" text="Pur. Group" />
+                                    </m:Column>
+                                    <m:Column id="colPlndDelry" visible="{= ${fieldControl>/PlantDetails/PlndDelry/visible} !== false}">
+                                        <m:customData><core:CustomData id="cdPlndDelry" key="p13nData" value='\{"columnKey": "PlndDelry", "leadingProperty": "PlndDelry"\}' /></m:customData>
+                                        <m:Text id="txtPlndDelry" text="Plnd Del. Time" />
+                                    </m:Column>
+                                    <m:Column id="colGrPrTime" visible="{= ${fieldControl>/PlantDetails/GrPrTime/visible} !== false}">
+                                        <m:customData><core:CustomData id="cdGrPrTime" key="p13nData" value='\{"columnKey": "GrPrTime", "leadingProperty": "GrPrTime"\}' /></m:customData>
+                                        <m:Text id="txtGrPrTime" text="GR Time" />
+                                    </m:Column>
+                                    <m:Column id="colProcType" visible="{= ${fieldControl>/PlantDetails/ProcType/visible} !== false}">
+                                        <m:customData><core:CustomData id="cdProcType" key="p13nData" value='\{"columnKey": "ProcType", "leadingProperty": "ProcType"\}' /></m:customData>
+                                        <m:Text id="txtProcType" text="Proc. Type" />
+                                    </m:Column>
+                                    <m:Column id="colSpproctype" visible="{= ${fieldControl>/PlantDetails/Spproctype/visible} !== false}">
+                                        <m:customData><core:CustomData id="cdSpproctype" key="p13nData" value='\{"columnKey": "Spproctype", "leadingProperty": "Spproctype"\}' /></m:customData>
+                                        <m:Text id="txtSpproctype" text="Spec. Proc" />
+                                    </m:Column>
+                                    <m:Column id="colReorderPt" visible="{= ${fieldControl>/PlantDetails/ReorderPt/visible} !== false}">
+                                        <m:customData><core:CustomData id="cdReorderPt" key="p13nData" value='\{"columnKey": "ReorderPt", "leadingProperty": "ReorderPt"\}' /></m:customData>
+                                        <m:Text id="txtReorderPt" text="Reorder Pt" />
+                                    </m:Column>
+                                    <m:Column id="colRoundVal" visible="{= ${fieldControl>/PlantDetails/RoundVal/visible} !== false}">
+                                        <m:customData><core:CustomData id="cdRoundVal" key="p13nData" value='\{"columnKey": "RoundVal", "leadingProperty": "RoundVal"\}' /></m:customData>
+                                        <m:Text id="txtRoundVal" text="Round Val" />
+                                    </m:Column>
+                                    <m:Column id="colBatchMgmt" visible="{= ${fieldControl>/PlantDetails/BatchMgmt/visible} !== false}">
+                                        <m:customData><core:CustomData id="cdBatchMgmt" key="p13nData" value='\{"columnKey": "BatchMgmt", "leadingProperty": "BatchMgmt"\}' /></m:customData>
+                                        <m:Text id="txtBatchMgmt" text="Batch Mgmt" />
+                                    </m:Column>
+                                    <m:Column id="colAutoPOrd" visible="{= ${fieldControl>/PlantDetails/AutoPOrd/visible} !== false}">
+                                        <m:customData><core:CustomData id="cdAutoPOrd" key="p13nData" value='\{"columnKey": "AutoPOrd", "leadingProperty": "AutoPOrd"\}' /></m:customData>
+                                        <m:Text id="txtAutoPOrd" text="Auto PO" />
+                                    </m:Column>
+                                    <m:Column id="colProfitCtr" visible="{= ${fieldControl>/PlantDetails/ProfitCtr/visible} !== false}">
+                                        <m:customData><core:CustomData id="cdProfitCtr" key="p13nData" value='\{"columnKey": "ProfitCtr", "leadingProperty": "ProfitCtr"\}' /></m:customData>
+                                        <m:Text id="txtProfitCtr" text="Profit Center" />
+                                    </m:Column>
+                                    <m:Column id="colIssStLoc" visible="{= ${fieldControl>/PlantDetails/IssStLoc/visible} !== false}">
+                                        <m:customData><core:CustomData id="cdIssStLoc" key="p13nData" value='\{"columnKey": "IssStLoc", "leadingProperty": "IssStLoc"\}' /></m:customData>
+                                        <m:Text id="txtIssStLoc" text="Issue StLoc" />
+                                    </m:Column>
+                                    <m:Column id="colMrpGroup" visible="{= ${fieldControl>/PlantDetails/MrpGroup/visible} !== false}">
+                                        <m:customData><core:CustomData id="cdMrpGroup" key="p13nData" value='\{"columnKey": "MrpGroup", "leadingProperty": "MrpGroup"\}' /></m:customData>
+                                        <m:Text id="txtMrpGroup" text="MRP Group" />
+                                    </m:Column>
+                                </m:columns>
+
+                                <m:items>
+                                    <m:ColumnListItem id="cliPlant">
+                                        <m:cells>
+                                            <m:CheckBox id="chkCbxCreate" selected="{CbxCreate}" editable="{= ${ui>/isCreateMode} }" />
+                                            <m:Input id="iptPlant" value="{Plant}" editable="{= ${fieldControl>/PlantDetails/Plant/editable} &amp;&amp; ${ui>/isCreateMode} }" required="{fieldControl>/PlantDetails/Plant/required}" />
+                                            <m:Input id="iptMrpType" value="{MrpType}" editable="{= ${fieldControl>/PlantDetails/MrpType/editable} &amp;&amp; ${ui>/isCreateMode} }" />
+                                            <m:Input id="iptLotsizekey" value="{Lotsizekey}" editable="{= ${fieldControl>/PlantDetails/Lotsizekey/editable} &amp;&amp; ${ui>/isCreateMode} }" />
+                                            <m:Input id="iptMrpCtrler" value="{MrpCtrler}" editable="{= ${fieldControl>/PlantDetails/MrpCtrler/editable} &amp;&amp; ${ui>/isCreateMode} }" />
+                                            <m:Input id="iptSlocExprc" value="{SlocExprc}" editable="{= ${fieldControl>/PlantDetails/SlocExprc/editable} &amp;&amp; ${ui>/isCreateMode} }" />
+                                            <m:Input id="iptLgpbe" value="{Lgpbe}" editable="{= ${ui>/isCreateMode} }" />
+                                            <m:Input id="iptPurStatus" value="{PurStatus}" editable="{= ${fieldControl>/PlantDetails/PurStatus/editable} &amp;&amp; ${ui>/isCreateMode} }" />
+                                            <m:Input id="iptAbcId" value="{AbcId}" editable="{= ${fieldControl>/PlantDetails/AbcId/editable} &amp;&amp; ${ui>/isCreateMode} }" />
+                                            <m:Input id="iptPurGroup" value="{PurGroup}" editable="{= ${fieldControl>/PlantDetails/PurGroup/editable} &amp;&amp; ${ui>/isCreateMode} }" />
+                                            <m:Input id="iptPlndDelry" value="{PlndDelry}" editable="{= ${fieldControl>/PlantDetails/PlndDelry/editable} &amp;&amp; ${ui>/isCreateMode} }" />
+                                            <m:Input id="iptGrPrTime" value="{GrPrTime}" editable="{= ${fieldControl>/PlantDetails/GrPrTime/editable} &amp;&amp; ${ui>/isCreateMode} }" />
+                                            <m:Input id="iptProcType" value="{ProcType}" editable="{= ${fieldControl>/PlantDetails/ProcType/editable} &amp;&amp; ${ui>/isCreateMode} }" />
+                                            <m:Input id="iptSpproctype" value="{Spproctype}" editable="{= ${fieldControl>/PlantDetails/Spproctype/editable} &amp;&amp; ${ui>/isCreateMode} }" />
+                                            <m:Input id="iptReorderPt" value="{ReorderPt}" editable="{= ${fieldControl>/PlantDetails/ReorderPt/editable} &amp;&amp; ${ui>/isCreateMode} }" />
+                                            <m:Input id="iptRoundVal" value="{RoundVal}" editable="{= ${fieldControl>/PlantDetails/RoundVal/editable} &amp;&amp; ${ui>/isCreateMode} }" />
+                                            <m:CheckBox id="chkBatchMgmt" selected="{BatchMgmt}" editable="{= ${fieldControl>/PlantDetails/BatchMgmt/editable} &amp;&amp; ${ui>/isCreateMode} }" />
+                                            <m:CheckBox id="chkAutoPOrd" selected="{AutoPOrd}" editable="{= ${fieldControl>/PlantDetails/AutoPOrd/editable} &amp;&amp; ${ui>/isCreateMode} }" />
+                                            <m:Input id="iptProfitCtr" value="{ProfitCtr}" editable="{= ${fieldControl>/PlantDetails/ProfitCtr/editable} &amp;&amp; ${ui>/isCreateMode} }" />
+                                            <m:Input id="iptIssStLoc" value="{IssStLoc}" editable="{= ${fieldControl>/PlantDetails/IssStLoc/editable} &amp;&amp; ${ui>/isCreateMode} }" />
+                                            <m:Input id="iptMrpGroup" value="{MrpGroup}" editable="{= ${fieldControl>/PlantDetails/MrpGroup/editable} &amp;&amp; ${ui>/isCreateMode} }" />
+                                        </m:cells>
+                                    </m:ColumnListItem>
+                                </m:items>
+                            </m:Table>
+                        </smartTable:SmartTable>
                     </ObjectPageSubSection>
                 </subSections>
             </ObjectPageSection>
@@ -434,34 +509,82 @@
                 <subSections>
                     <ObjectPageSubSection id="OPSS3">
 
-                        <m:Table id="TblValuation" items="{to_Valuations}">
-                            <m:columns>
-                                <m:Column id="colValArea"><m:Text id="lblValArea" text="Val. Area" /></m:Column>
-                                <m:Column id="colValType"><m:Text id="lblValType" text="Val. Type" /></m:Column>
-                                <m:Column id="colValCat"><m:Text id="lblValCat" text="Val. Category" /></m:Column>
-                                <m:Column id="colPriceCtrl"><m:Text id="lblPriceCtrl" text="Price Ctrl" /></m:Column>
-                                <m:Column id="colStdPrice"><m:Text id="lblStdPrice" text="Std. Price" /></m:Column>
-                                <m:Column id="colMovingPr"><m:Text id="lblMovingPr" text="Moving Price" /></m:Column>
-                                <m:Column id="colCurrency"><m:Text id="lblCurrency" text="Currency" /></m:Column>
-                                <m:Column id="colPriceUnit"><m:Text id="lblPriceUnit" text="Price Unit" /></m:Column>
-                                <m:Column id="colValClass"><m:Text id="lblValClass" text="Val. Class" /></m:Column>
-                            </m:columns>
-                            <m:items>
-                                <m:ColumnListItem id="cliValuation">
-                                    <m:cells>
-                                        <m:Input id="iptValArea" value="{ValArea}" editable="{parts: [{path: 'fieldControl>/ValuationDetails/ValArea/editable'}, {path: 'ui>/isCreateMode'}], formatter: '.formatCellEditable'}" />
-                                        <m:Input id="iptValType" value="{ValType}" editable="{parts: [{path: 'fieldControl>/ValuationDetails/ValType/editable'}, {path: 'ui>/isCreateMode'}], formatter: '.formatCellEditable'}" />
-                                        <m:Input id="iptValCat" value="{ValCat}" editable="{parts: [{path: 'fieldControl>/ValuationDetails/ValCat/editable'}, {path: 'ui>/isCreateMode'}], formatter: '.formatCellEditable'}" />
-                                        <m:Input id="iptPriceCtrl" value="{PriceCtrl}" editable="{parts: [{path: 'fieldControl>/ValuationDetails/PriceCtrl/editable'}, {path: 'ui>/isCreateMode'}], formatter: '.formatCellEditable'}" />
-                                        <m:Input id="iptStdPrice" value="{StdPrice}" editable="{parts: [{path: 'fieldControl>/ValuationDetails/StdPrice/editable'}, {path: 'ui>/isCreateMode'}], formatter: '.formatCellEditable'}" />
-                                        <m:Input id="iptMovingPr" value="{MovingPr}" editable="{parts: [{path: 'fieldControl>/ValuationDetails/MovingPr/editable'}, {path: 'ui>/isCreateMode'}], formatter: '.formatCellEditable'}" />
-                                        <m:Input id="iptCurrency" value="{Currency}" editable="{parts: [{path: 'fieldControl>/ValuationDetails/Currency/editable'}, {path: 'ui>/isCreateMode'}], formatter: '.formatCellEditable'}" />
-                                        <m:Input id="iptPriceUnit" value="{PriceUnit}" editable="{parts: [{path: 'fieldControl>/ValuationDetails/PriceUnit/editable'}, {path: 'ui>/isCreateMode'}], formatter: '.formatCellEditable'}" />
-                                        <m:Input id="iptValClass" value="{ValClass}" editable="{parts: [{path: 'fieldControl>/ValuationDetails/ValClass/editable'}, {path: 'ui>/isCreateMode'}], formatter: '.formatCellEditable'}" />
-                                    </m:cells>
-                                </m:ColumnListItem>
-                            </m:items>
-                        </m:Table>
+                        <smartTable:SmartTable 
+                            id="STble3" 
+                            entitySet="ValuationDetailsSet" 
+                            tableBindingPath="to_Valuations" 
+                            header="Valuation Areas"
+                            enableAutoBinding="true"
+                            editable="{ui>/isCreateMode}" 
+                            editTogglable="false"
+                            useTablePersonalisation="true"
+                            demandPopin="true">
+                            
+                            <m:Table id="Tbl3.1" sticky="ColumnHeaders">
+                                <m:columns>
+                                    <m:Column id="colValArea" visible="{= ${fieldControl>/ValuationDetails/ValArea/visible} !== false}">
+                                        <m:customData><core:CustomData id="cdValArea" key="p13nData" value='\{"columnKey": "ValArea", "leadingProperty": "ValArea", "sortProperty": "ValArea"\}' /></m:customData>
+                                        <m:Text id="txtValArea" text="Val. Area" />
+                                    </m:Column>
+
+                                    <m:Column id="colValType" visible="{= ${fieldControl>/ValuationDetails/ValType/visible} !== false}">
+                                        <m:customData><core:CustomData id="cdValType" key="p13nData" value='\{"columnKey": "ValType", "leadingProperty": "ValType"\}' /></m:customData>
+                                        <m:Text id="txtValType" text="Val. Type" />
+                                    </m:Column>
+
+                                    <m:Column id="colValCat" visible="{= ${fieldControl>/ValuationDetails/ValCat/visible} !== false}">
+                                        <m:customData><core:CustomData id="cdValCat" key="p13nData" value='\{"columnKey": "ValCat", "leadingProperty": "ValCat"\}' /></m:customData>
+                                        <m:Text id="txtValCat" text="Val. Category" />
+                                    </m:Column>
+
+                                    <m:Column id="colPriceCtrl" visible="{= ${fieldControl>/ValuationDetails/PriceCtrl/visible} !== false}">
+                                        <m:customData><core:CustomData id="cdPriceCtrl" key="p13nData" value='\{"columnKey": "PriceCtrl", "leadingProperty": "PriceCtrl"\}' /></m:customData>
+                                        <m:Text id="txtPriceCtrl" text="Price Ctrl" />
+                                    </m:Column>
+
+                                    <m:Column id="colStdPrice" visible="{= ${fieldControl>/ValuationDetails/StdPrice/visible} !== false}">
+                                        <m:customData><core:CustomData id="cdStdPrice" key="p13nData" value='\{"columnKey": "StdPrice", "leadingProperty": "StdPrice"\}' /></m:customData>
+                                        <m:Text id="txtStdPrice" text="Std. Price" />
+                                    </m:Column>
+
+                                    <m:Column id="colMovingPr" visible="{= ${fieldControl>/ValuationDetails/MovingPr/visible} !== false}">
+                                        <m:customData><core:CustomData id="cdMovingPr" key="p13nData" value='\{"columnKey": "MovingPr", "leadingProperty": "MovingPr"\}' /></m:customData>
+                                        <m:Text id="txtMovingPr" text="Moving Price" />
+                                    </m:Column>
+
+                                    <m:Column id="colCurrency" visible="{= ${fieldControl>/ValuationDetails/Currency/visible} !== false}">
+                                        <m:customData><core:CustomData id="cdCurrency" key="p13nData" value='\{"columnKey": "Currency", "leadingProperty": "Currency"\}' /></m:customData>
+                                        <m:Text id="txtCurrency" text="Currency" />
+                                    </m:Column>
+
+                                    <m:Column id="colPriceUnit" visible="{= ${fieldControl>/ValuationDetails/PriceUnit/visible} !== false}">
+                                        <m:customData><core:CustomData id="cdPriceUnit" key="p13nData" value='\{"columnKey": "PriceUnit", "leadingProperty": "PriceUnit"\}' /></m:customData>
+                                        <m:Text id="txtPriceUnit" text="Price Unit" />
+                                    </m:Column>
+
+                                    <m:Column id="colValClass" visible="{= ${fieldControl>/ValuationDetails/ValClass/visible} !== false}">
+                                        <m:customData><core:CustomData id="cdValClass" key="p13nData" value='\{"columnKey": "ValClass", "leadingProperty": "ValClass"\}' /></m:customData>
+                                        <m:Text id="txtValClass" text="Val. Class" />
+                                    </m:Column>
+                                </m:columns>
+
+                                <m:items>
+                                    <m:ColumnListItem id="cliValuation">
+                                        <m:cells>
+                                            <m:Input id="iptValArea" value="{ValArea}" editable="{= ${fieldControl>/ValuationDetails/ValArea/editable} &amp;&amp; ${ui>/isCreateMode} }" required="{fieldControl>/ValuationDetails/ValArea/required}" />
+                                            <m:Input id="iptValType" value="{ValType}" editable="{= ${fieldControl>/ValuationDetails/ValType/editable} &amp;&amp; ${ui>/isCreateMode} }" />
+                                            <m:Input id="iptValCat" value="{ValCat}" editable="{= ${fieldControl>/ValuationDetails/ValCat/editable} &amp;&amp; ${ui>/isCreateMode} }" />
+                                            <m:Input id="iptPriceCtrl" value="{PriceCtrl}" editable="{= ${fieldControl>/ValuationDetails/PriceCtrl/editable} &amp;&amp; ${ui>/isCreateMode} }" />
+                                            <m:Input id="iptStdPrice" value="{StdPrice}" editable="{= ${fieldControl>/ValuationDetails/StdPrice/editable} &amp;&amp; ${ui>/isCreateMode} }" />
+                                            <m:Input id="iptMovingPr" value="{MovingPr}" editable="{= ${fieldControl>/ValuationDetails/MovingPr/editable} &amp;&amp; ${ui>/isCreateMode} }" />
+                                            <m:Input id="iptCurrency" value="{Currency}" editable="{= ${fieldControl>/ValuationDetails/Currency/editable} &amp;&amp; ${ui>/isCreateMode} }" />
+                                            <m:Input id="iptPriceUnit" value="{PriceUnit}" editable="{= ${fieldControl>/ValuationDetails/PriceUnit/editable} &amp;&amp; ${ui>/isCreateMode} }" />
+                                            <m:Input id="iptValClass" value="{ValClass}" editable="{= ${fieldControl>/ValuationDetails/ValClass/editable} &amp;&amp; ${ui>/isCreateMode} }" />
+                                        </m:cells>
+                                    </m:ColumnListItem>
+                                </m:items>
+                            </m:Table>
+                        </smartTable:SmartTable>
                              
                     </ObjectPageSubSection>
                 </subSections>
@@ -499,39 +622,64 @@
                 <subSections>
                     <ObjectPageSubSection id="opssRecentMaterials">
                         <blocks>
-                            <m:Table id="TblRecentMaterials" items="{/xCOSxQMC_I_RECENTMATS}">
-                                <m:headerToolbar>
-                                    <m:OverflowToolbar id="otbRecentMaterials">
-                                        <m:Title id="titRecentMaterials" text="Recently Created Materials" />
-                                        <m:ToolbarSpacer id="tspRecentMaterials" />
-                                        <m:Button id="btnRefreshRecent" icon="sap-icon://refresh" press="onRefreshRecentTable" />
-                                    </m:OverflowToolbar>
-                                </m:headerToolbar>
-                                <m:columns>
-                                    <m:Column id="colRecMat"><m:Text id="lblRecMat" text="Material" /></m:Column>
-                                    <m:Column id="colRecType"><m:Text id="lblRecType" text="Mat. Type" /></m:Column>
-                                    <m:Column id="colRecDesc"><m:Text id="lblRecDesc" text="Description" /></m:Column>
-                                    <m:Column id="colRecUom"><m:Text id="lblRecUom" text="Base UOM" /></m:Column>
-                                    <m:Column id="colRecGrp"><m:Text id="lblRecGrp" text="Mat. Group" /></m:Column>
-                                    <m:Column id="colRecDate"><m:Text id="lblRecDate" text="Created On" /></m:Column>
-                                    <m:Column id="colRecTime"><m:Text id="lblRecTime" text="Time" /></m:Column>
-                                </m:columns>
-                                <m:items>
-                                    <m:ColumnListItem id="cliRecent">
-                                        <m:cells>
-                                            <m:Text id="txtRecMat" text="{Material}" />
-                                            <m:Text id="txtRecType" text="{MatType}" />
-                                            <m:Text id="txtRecDesc" text="{Description}" />
-                                            <m:Text id="txtRecUom" text="{BaseUOM}" />
-                                            <m:Text id="txtRecGrp" text="{MatGroup}" />
-                                            <m:Text id="txtRecDate" 
-                                                text="{path: 'CreatedOn', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'dd.MM.yyyy' }}" />
-                                            <m:Text id="txtRecTime" 
-                                                text="{path: 'CreatedOnTime', formatter: '.formatTime'}" />
-                                        </m:cells>
-                                    </m:ColumnListItem>
-                                </m:items>
-                            </m:Table>
+                            <smartTable:SmartTable 
+                                id="STbleRecent" 
+                                entitySet="xCOSxQMC_I_RECENTMATS" 
+                                header="Recently Created Materials"
+                                showRowCount="true" 
+                                enableAutoBinding="true"
+                                useTablePersonalisation="true"
+                                editable="false" 
+                                editTogglable="false"
+                                demandPopin="true">
+                                
+                                <m:Table id="TblRecent.1" sticky="ColumnHeaders">
+                                    <m:columns>
+                                        <m:Column id="colRecMaterial">
+                                            <m:customData><core:CustomData id="cdRecMaterial" key="p13nData" value='\{"columnKey": "Material", "leadingProperty": "Material", "sortProperty": "Material"\}' /></m:customData>
+                                            <m:Text id="lblRecMaterial" text="Material" />
+                                        </m:Column>
+                                        <m:Column id="colRecMatType">
+                                            <m:customData><core:CustomData id="cdRecMatType" key="p13nData" value='\{"columnKey": "MatType", "leadingProperty": "MatType"\}' /></m:customData>
+                                            <m:Text id="lblRecMatType" text="Mat. Type" />
+                                        </m:Column>
+                                        <m:Column id="colRecDescription">
+                                            <m:customData><core:CustomData id="cdRecDescription" key="p13nData" value='\{"columnKey": "Description", "leadingProperty": "Description"\}' /></m:customData>
+                                            <m:Text id="lblRecDescription" text="Description" />
+                                        </m:Column>
+                                        <m:Column id="colRecBaseUOM">
+                                            <m:customData><core:CustomData id="cdRecBaseUOM" key="p13nData" value='\{"columnKey": "BaseUOM", "leadingProperty": "BaseUOM"\}' /></m:customData>
+                                            <m:Text id="lblRecBaseUOM" text="Base UOM" />
+                                        </m:Column>
+                                        <m:Column id="colRecMatGroup">
+                                            <m:customData><core:CustomData id="cdRecMatGroup" key="p13nData" value='\{"columnKey": "MatGroup", "leadingProperty": "MatGroup"\}' /></m:customData>
+                                            <m:Text id="lblRecMatGroup" text="Mat. Group" />
+                                        </m:Column>
+                                        <m:Column id="colRecCreatedOn">
+                                            <m:customData><core:CustomData id="cdRecCreatedOn" key="p13nData" value='\{"columnKey": "CreatedOn", "leadingProperty": "CreatedOn"\}' /></m:customData>
+                                            <m:Text id="lblRecCreatedOn" text="Created On" />
+                                        </m:Column>
+                                        <m:Column id="colRecCreatedOnTime">
+                                            <m:customData><core:CustomData id="cdRecCreatedOnTime" key="p13nData" value='\{"columnKey": "CreatedOnTime", "leadingProperty": "CreatedOnTime"\}' /></m:customData>
+                                            <m:Text id="lblRecCreatedOnTime" text="Time" />
+                                        </m:Column>
+                                    </m:columns>
+
+                                    <m:items>
+                                        <m:ColumnListItem id="cliRecent">
+                                            <m:cells>
+                                                <m:Text id="txtRecMaterial" text="{Material}" />
+                                                <m:Text id="txtRecMatType" text="{MatType}" />
+                                                <m:Text id="txtRecDescription" text="{Description}" />
+                                                <m:Text id="txtRecBaseUOM" text="{BaseUOM}" />
+                                                <m:Text id="txtRecMatGroup" text="{MatGroup}" />
+                                                <m:Text id="txtRecCreatedOn" text="{path: 'CreatedOn', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'dd.MM.yyyy' }}" />
+                                                <m:Text id="txtRecCreatedOnTime" text="{path: 'CreatedOnTime', formatter: '.formatTime'}" />
+                                            </m:cells>
+                                        </m:ColumnListItem>
+                                    </m:items>
+                                </m:Table>
+                            </smartTable:SmartTable>
                         </blocks>
                     </ObjectPageSubSection>
                 </subSections>

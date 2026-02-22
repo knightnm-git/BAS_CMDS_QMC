@@ -455,68 +455,32 @@ sap.ui.define([
                 oBinding.refresh();
             }
         },
+formatTime: function(sTime) {
+    if (!sTime) {
+        return "";
+    }
 
+    // Handle SAP PT Format (e.g., PT20H18M38S)
+    if (typeof sTime === "string" && sTime.indexOf("PT") !== -1) {
+        var h = sTime.match(/(\d+)H/);
+        var m = sTime.match(/(\d+)M/);
+        var s = sTime.match(/(\d+)S/);
 
-        // Formatter to handle boolean visibility/editability from the fieldControl model
-        formatFieldVisible: function (sProperty, sField) {
-            var oFieldControl = this.getView().getModel("fieldControl");
-            if (!oFieldControl) { return true; }
+        // Extract values or default to "00" if the BAPI returns a flat hour (e.g., PT20H)
+        var hh = (h && h[1]) ? h[1].padStart(2, '0') : "00";
+        var mm = (m && m[1]) ? m[1].padStart(2, '0') : "00";
+        var ss = (s && s[1]) ? s[1].padStart(2, '0') : "00";
 
-            // Path: fieldControl>/PlantDetails/Plant/visible
-            var bVisible = oFieldControl.getProperty("/" + sProperty + "/" + sField + "/visible");
-            return bVisible !== false; // Default to true if not explicitly false
-        },
+        return hh + ":" + mm + ":" + ss;
+    }
 
-        formatFieldEditable: function (sProperty, sField, bIsCreateMode) {
-            var oFieldControl = this.getView().getModel("fieldControl");
-            if (!oFieldControl || !bIsCreateMode) { return false; }
+    // Fallback for standard Object format if needed
+    if (typeof sTime === "object" && sTime.ms !== undefined) {
+        var oDate = sap.ui.core.format.DateFormat.getTimeInstance({pattern: "HH:mm:ss"});
+        return oDate.format(new Date(sTime.ms), true);
+    }
 
-            var bEditable = oFieldControl.getProperty("/" + sProperty + "/" + sField + "/editable");
-            return bEditable !== false;
-        },
-
-        // Simple formatter for parts of the UI that only depend on Create Mode
-        formatIsCreateMode: function (bIsCreateMode) {
-            return bIsCreateMode === true;
-        },
-        // Generic Formatter for Editability: 
-        // Checks if field is editable in fieldControl AND if app is in Create Mode
-        formatCellEditable: function (bFieldEditable, bIsCreateMode) {
-            return (bFieldEditable !== false) && (bIsCreateMode === true);
-        },
-
-        // Generic Formatter for Visibility:
-        formatCellVisible: function (bFieldVisible) {
-            return bFieldVisible !== false;
-        },
-
-        // Formatter for the PT Time string we fixed earlier
-        formatTime: function (sTime) {
-            if (!sTime) {
-                return "";
-            }
-
-            // Handle SAP PT Format (e.g., PT20H18M38S)
-            if (typeof sTime === "string" && sTime.indexOf("PT") !== -1) {
-                var h = sTime.match(/(\d+)H/);
-                var m = sTime.match(/(\d+)M/);
-                var s = sTime.match(/(\d+)S/);
-
-                // Extract values or default to "00" if the BAPI returns a flat hour (e.g., PT20H)
-                var hh = (h && h[1]) ? h[1].padStart(2, '0') : "00";
-                var mm = (m && m[1]) ? m[1].padStart(2, '0') : "00";
-                var ss = (s && s[1]) ? s[1].padStart(2, '0') : "00";
-
-                return hh + ":" + mm + ":" + ss;
-            }
-
-            // Fallback for standard Object format if needed
-            if (typeof sTime === "object" && sTime.ms !== undefined) {
-                var oDate = sap.ui.core.format.DateFormat.getTimeInstance({ pattern: "HH:mm:ss" });
-                return oDate.format(new Date(sTime.ms), true);
-            }
-
-            return sTime;
-        }
+    return sTime;
+}
     });
 });
