@@ -5,17 +5,17 @@
         id="materialSelectDialog7"
         title="Select Material"
         contentWidth="60%"
-        search=".onValueHelpSearch"
-        confirm=".onValueConfirm"
-        cancel=".onValueHelpClose"
+        search=".onMatValueHelpSearch"
+        confirm=".onMatValueConfirm"
         items="{
             path: '/TmplmatShSet',
             sorter: { path: 'TemplateMat', descending: false },
             parameters: {
+                operationMode: 'Client',
                 countMode: 'None' }
         }"
         growing="true"
-        growingThreshold="20">
+        growingThreshold="200">
         
         <columns>
             <m:Column id="Col1.0" xmlns:m="sap.m">

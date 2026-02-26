@@ -10,19 +10,25 @@ sap.ui.define([
     return Controller.extend("cos.cmds.qmc.cmdsqmc.controller.MainView", {
         onInit: function () {
             var oModel = this.getOwnerComponent().getModel();
+            var oMessageManager = sap.ui.getCore().getMessageManager();
+
             if (oModel) {
                 oModel.setDefaultBindingMode(sap.ui.model.BindingMode.TwoWay);
+
+                // 1. Link the OData model to the message processor
+                oMessageManager.registerMessageProcessor(oModel);
+
+                // Initialize models
+                var oViewModel = new sap.ui.model.json.JSONModel({
+                    isCreateMode: true,
+                    hasData: false
+                });
+                this.getView().setModel(oViewModel, "ui");
+                this.getView().setModel(new sap.ui.model.json.JSONModel({}), "fieldControl");
+
+                // Register the view to the manager so fields can turn red
+                oMessageManager.registerObject(this.getView(), true);
             }
-
-            // Initialize the UI state model
-            var oViewModel = new sap.ui.model.json.JSONModel({
-                isCreateMode: true, // The "Master Switch" for post-save locking
-                hasData: false // Initially false because no template is loaded yet
-            });
-            this.getView().setModel(oViewModel, "ui");
-
-            // Initialize an empty Field Control model to prevent binding errors
-            this.getView().setModel(new sap.ui.model.json.JSONModel({}), "fieldControl");
         },
 
         onTemplateSelect: function (oEvent) {
@@ -47,7 +53,7 @@ sap.ui.define([
                         var oReceivedData = oData.getParameter("data");
 
                         if (!oReceivedData) {
-                            // ... your existing error handling ...
+                            //error handling
                             return;
                         }
                         // Success! Lock the template field
@@ -66,7 +72,6 @@ sap.ui.define([
             });
         },
 
-        // Add this as a new method in your controller
         _loadFieldControl: function (sMatType) {
             var oModel = this.getView().getModel();
             var oView = this.getView();
@@ -94,7 +99,9 @@ sap.ui.define([
                 }
             });
         },
-
+        //*************************************//
+        // Template Material Value Help Request
+        //*************************************//
         onMaterialValueHelpRequest: function () {
             var oView = this.getView();
             if (!this._oSelectDialog) {
@@ -103,6 +110,47 @@ sap.ui.define([
             }
             this._oSelectDialog.open();
         },
+
+        onMatValueHelpSearch: function (oEvent) {
+            var sValue = oEvent.getParameter("value");
+            var oBinding = oEvent.getSource().getBinding("items");
+
+            // Check if the 'clear' icon was pressed or if the search string is empty
+            var bClearButtonPressed = oEvent.getParameter("clearButtonPressed");
+
+            if (sValue && !bClearButtonPressed) {
+                // Since backend DPC_EXT is bypassed in Client mode, 
+                // we manually define the 3-field search here.
+                var aFilters = [
+                    new Filter("TemplateMat", FilterOperator.Contains, sValue),
+                    new Filter("Maktg", FilterOperator.Contains, sValue),
+                    new Filter("Mtart", FilterOperator.Contains, sValue)
+                ];
+
+                var oCombinedFilter = new Filter({
+                    filters: aFilters,
+                    and: false // 'false' creates an OR condition
+                });
+
+                oBinding.filter([oCombinedFilter]);
+            } else {
+                // Resets the list to show all items
+                oBinding.filter([]);
+            }
+        },
+
+        onMatValueConfirm: function (oEvent) {
+            var oSelectedItem = oEvent.getParameter("selectedItem");
+            if (oSelectedItem) {
+                var sMaterial = oSelectedItem.getBindingContext().getProperty("TemplateMat");
+                this.getView().byId("materialInput7").setValue(sMaterial);
+                this._loadTemplateData(sMaterial);
+            }
+        },
+
+        //*************************************//
+        // Generic Value Help Requests (for multiple fields)
+        //*************************************//
         onValueHelpRequest: function (oEvent) {
             var oInput = oEvent.getSource();
             this._oInputSource = oInput;
@@ -225,14 +273,7 @@ sap.ui.define([
             }
         },
 
-        onValueConfirm: function (oEvent) {
-            var oSelectedItem = oEvent.getParameter("selectedItem");
-            if (oSelectedItem) {
-                var sMaterial = oSelectedItem.getBindingContext().getProperty("TemplateMat");
-                this.getView().byId("materialInput7").setValue(sMaterial);
-                this._loadTemplateData(sMaterial);
-            }
-        },
+
 
         onReset: function () {
             var oView = this.getView();
@@ -264,8 +305,9 @@ sap.ui.define([
                 }
             });
         },
-
         onCreateMaterial: function () {
+            // Clear previous validation state
+            sap.ui.getCore().getMessageManager().removeAllMessages();
             var oView = this.getView();
             var oModel = oView.getModel();
 
@@ -295,15 +337,15 @@ sap.ui.define([
             // Get the updated Header Data
             var oPayload = fnSanitize(oContext.getObject());
 
-            // Get the Plants Data (STble2) - Using path-based property access for current values
-            var oPlantsTable = oView.byId("STble2").getTable();
+            // Get the Plants Data 
+            var oPlantsTable = oView.byId("TblPlantDetails");
             oPayload.to_Plants = oPlantsTable.getItems().map(function (oItem) {
                 var oCtx = oItem.getBindingContext();
                 return oCtx ? fnSanitize(oModel.getProperty(oCtx.getPath())) : null;
             }).filter(Boolean);
 
-            // Get the Valuation Data (STble3)
-            var oValTable = oView.byId("STble3").getTable();
+            // Get the Valuation Data 
+            var oValTable = oView.byId("TblValuation");
             oPayload.to_Valuations = oValTable.getItems().map(function (oItem) {
                 var oCtx = oItem.getBindingContext();
                 return oCtx ? fnSanitize(oModel.getProperty(oCtx.getPath())) : null;
@@ -318,7 +360,6 @@ sap.ui.define([
             oPayload.Matnr = "";
             delete oPayload.Material;
             delete oPayload.to_Longtexts;
-
 
             var oTabHeader = oView.byId("ITB_LongTexts");
             var aTabs = oTabHeader.getItems();
@@ -336,8 +377,9 @@ sap.ui.define([
 
                 return oTextObj;
             }).filter(Boolean);
-            console.log("FINAL PAYLOAD", oPayload);
 
+            // DEBUG: console.log("FINAL PAYLOAD", oPayload);
+  
             // Create Call
             oModel.create("/MaterialHeaderSet", oPayload, {
                 success: function (oData) {
@@ -363,35 +405,93 @@ sap.ui.define([
                     });
                 }.bind(this),
                 error: function (oError) {
+                  
                     oView.setBusy(false);
 
-                    var aMessages = [];
-                    try {
-                        var oResponse = JSON.parse(oError.responseText);
-                        var aDetails = oResponse.error.innererror.errordetails;
-
-                        // Filter out the "noise" from the Gateway Framework
-                        aMessages = aDetails.filter(function (msg) {
-                            var bIsFrameworkError = msg.code === "/IWBEP/CM_MGW_RT/022" ||
-                                msg.code === "/IWBEP/CX_MGW_BUSI_EXCEPTION" ||
-                                msg.message === "Exception raised without specific error";
-                            return !bIsFrameworkError;
-                        }).map(function (msg) {
-                            return {
-                                type: msg.severity === "error" ? "Error" :
-                                    msg.severity === "warning" ? "Warning" :
-                                        msg.severity === "info" ? "Information" : "Success",
-                                title: msg.message,
-                                description: msg.code
-                            };
-                        });
-                    } catch (e) {
-                        aMessages.push({ type: "Error", title: "An unexpected error occurred." });
-                    }
-
-                    this._showMessageDialog(aMessages);
+                    // With the correct backend target, we just need to wait a 
+                    // split second for the framework's internal parser to finish.
+                    setTimeout(function () {
+                        var oBtn = this.byId("btnCreate");
+                        this._getOutputMessagePopover().openBy(oBtn);
+                    }.bind(this), 200);
                 }.bind(this)
             });
+        },
+        _parseODataError: function (oError) {
+            var aMessages = [];
+            try {
+                // SAP OData errors are usually stringified JSON in the .responseText or .message property
+                var oResponse = JSON.parse(oError.responseText || oError.message);
+
+                // If the backend returns the array directly or inside error.innererror.errordetails
+                if (oResponse.error && oResponse.error.innererror && oResponse.error.innererror.errordetails) {
+                    aMessages = oResponse.error.innererror.errordetails;
+                } else if (Array.isArray(oResponse)) {
+                    aMessages = oResponse;
+                }
+            } catch (e) {
+                aMessages.push({
+                    message: "An unexpected error occurred.",
+                    type: "Error"
+                });
+            }
+            return aMessages;
+        },
+        _showMessageDialog: function (aMessages) {
+            var oMessageModel = new sap.ui.model.json.JSONModel(aMessages);
+
+            var oMessageTemplate = new sap.m.MessageItem({
+                type: "{type}",
+                title: "{title}",
+                description: "{description}"
+            });
+
+            var oMessageView = new sap.m.MessageView({
+                items: {
+                    path: "/",
+                    template: oMessageTemplate
+                }
+            });
+
+            oMessageView.setModel(oMessageModel);
+
+            var oDialog = new sap.m.Dialog({
+                title: "Test Run Results / Error Log",
+                content: oMessageView,
+                contentHeight: "50%",
+                contentWidth: "50%",
+                verticalScrolling: false,
+                beginButton: new sap.m.Button({
+                    text: "Close",
+                    press: function () {
+                        oDialog.close();
+                    }
+                })
+            });
+
+            this.getView().addDependent(oDialog);
+            oDialog.open();
+        },
+
+        _getOutputMessagePopover: function () {
+            if (!this._oMessagePopover) {
+                this._oMessagePopover = new sap.m.MessagePopover({
+                    items: {
+                        path: "message>/",
+                        template: new sap.m.MessageItem({
+                            type: "{message>type}",
+                            title: "{message>message}",
+                            subtitle: "{message>additionalText}",
+                            description: "{message>description}",
+                            additionalText: "{message>additionalText}"
+                        })
+                    }
+                });
+                // set the message model to the popover 
+                this._oMessagePopover.setModel(sap.ui.getCore().getMessageManager().getMessageModel(), "message");
+                this.getView().addDependent(this._oMessagePopover);
+            }
+            return this._oMessagePopover;
         },
         _parseODataError: function (oError) {
             var aMessages = [];

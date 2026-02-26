@@ -28,8 +28,8 @@
         "type": "OData",
         "settings": {
           "annotations": [
-              "COS_QMC_ODATA_ANNO_MDL",
-              "localAnnotations"
+            "COS_QMC_ODATA_ANNO_MDL",
+            "localAnnotations"
           ],
           "localUri": "localService/mainService/metadata.xml",
           "odataVersion": "2.0"
@@ -38,10 +38,8 @@
       "localAnnotations": {
         "uri": "annotations/annotations.xml",
         "type": "ODataAnnotation"
- 
-        }
+      }
     }
-   
   },
   "sap.ui": {
     "technology": "UI5",
@@ -82,7 +80,10 @@
       "": {
         "dataSource": "mainService",
         "preload": true,
-        "settings": {}
+        "settings": {
+          "defaultBindingMode": "TwoWay",
+          "handleValidation": true
+        }
       }
     },
     "resources": {
