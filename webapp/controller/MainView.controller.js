@@ -148,56 +148,52 @@ sap.ui.define([
             }
         },
 
-        //*************************************//
+        //************************************************//
         // Generic Value Help Requests (for multiple fields)
-        //*************************************//
+        //***********************************************//
         onValueHelpRequest: function (oEvent) {
             var oInput = oEvent.getSource();
             this._oInputSource = oInput;
+            var oView = this.getView();
+            var oModel = oView.getModel();
 
             var sEntitySet = oInput.data("entitySet");
             var sTitle = oInput.data("title");
             var sKeyField = oInput.data("keyField");
             var sDescField = oInput.data("descField");
+            var bClientSide = oInput.data("useClientSide") === "true";
 
-            if (!this._pValueHelpDialog) {
-                this._pValueHelpDialog = sap.ui.xmlfragment("cos.cmds.qmc.cmdsqmc.view.fragments.ValueHelpDialog", this);
-                this.getView().addDependent(this._pValueHelpDialog);
-            }
+            // 1. Fresh fragment every time
+            var oDialog = sap.ui.xmlfragment(oView.getId(), "cos.cmds.qmc.cmdsqmc.view.fragments.ValueHelpDialog", this);
+            oView.addDependent(oDialog);
+            oDialog.setTitle(sTitle);
 
-            this._pValueHelpDialog.setTitle(sTitle);
+            var oLocalModel = oView.getModel("localVH") || new sap.ui.model.json.JSONModel();
+            if (!oView.getModel("localVH")) { oView.setModel(oLocalModel, "localVH"); }
 
-            // Create a local JSON model if it doesn't exist
-            if (!this.getView().getModel("localVH")) {
-                this.getView().setModel(new sap.ui.model.json.JSONModel(), "localVH");
-            }
+            var oItemTemplate = new sap.m.ColumnListItem({
+                cells: [
+                    new sap.m.Text({ text: "{localVH>" + sKeyField + "}" }),
+                    new sap.m.Text({ text: "{localVH>" + sDescField + "}" })
+                ]
+            });
 
-            var oLocalModel = this.getView().getModel("localVH");
-            var oODataModel = this.getView().getModel();
+            // Bind to JSON model ONLY (stops auto-OData-refresh)
+            oDialog.bindAggregation("items", { path: "localVH>/" + sEntitySet, template: oItemTemplate });
 
-            // Check if we already loaded this specific entity set to avoid ANY re-calls
-            if (!oLocalModel.getProperty("/" + sEntitySet)) {
-                this._pValueHelpDialog.setBusy(true);
-
-                oODataModel.read("/" + sEntitySet, {
-                    success: function (oData) {
-                        // Store the results in the local JSON model
-                        oLocalModel.setProperty("/" + sEntitySet, oData.results);
-
-                        // Bind the Dialog to the LOCAL JSON model, NOT the OData model
-                        this._bindDialogToLocal(sEntitySet, sKeyField, sDescField);
-                        this._pValueHelpDialog.setBusy(false);
-                    }.bind(this),
-                    error: function () {
-                        this._pValueHelpDialog.setBusy(false);
-                    }.bind(this)
-                });
+            if (bClientSide && oLocalModel.getProperty("/" + sEntitySet)) {
+                oDialog.open();
             } else {
-                // Data already exists locally, just ensure the binding is correct
-                this._bindDialogToLocal(sEntitySet, sKeyField, sDescField);
+                oDialog.setBusy(true);
+                oDialog.open();
+                oModel.read("/" + sEntitySet, {
+                    success: function (oData) {
+                        oLocalModel.setProperty("/" + sEntitySet, oData.results);
+                        oDialog.setBusy(false);
+                    },
+                    error: function () { oDialog.setBusy(false); }
+                });
             }
-
-            this._pValueHelpDialog.open();
         },
 
         _bindDialogToLocal: function (sEntitySet, sKeyField, sDescField) {
@@ -213,37 +209,65 @@ sap.ui.define([
         },
 
         onValueHelpConfirm: function (oEvent) {
-            var oSelectedItem = oEvent.getParameter("selectedItem");
-            if (oSelectedItem) {
-                var aCells = oSelectedItem.getCells();
-                var sKey = aCells[0].getText();
-                var sDesc = aCells[1].getText();
-
-                // Update the UI
-                this._oInputSource.setValue(sKey);
-                var sTargetId = this._oInputSource.data("targetDescId");
-                if (sTargetId) {
-                    var oDescInput = this.byId(sTargetId);
-                    if (oDescInput) oDescInput.setValue(sDesc);
-                }
-
-                // Update the OData Model Property (for the deep create payload)
-                var oBinding = this._oInputSource.getBinding("value");
-                if (oBinding) {
-                    oBinding.getModel().setProperty(oBinding.getPath(), sKey, this._oInputSource.getBindingContext());
-                }
-            }
+            // ... selection logic ...
+            oEvent.getSource().destroy();
         },
+        onValueHelpClose: function (oEvent) {
+            oEvent.getSource().destroy();
+        },
+
         onValueHelpSearch: function (oEvent) {
             var sValue = oEvent.getParameter("value");
-            var sKeyField = this._oInputSource.data("keyField");
+            var oDialog = oEvent.getSource();
+            var oInput = this._oInputSource;
+            var oView = this.getView();
+            var oModel = oView.getModel();
 
-            // This filter now runs against the local JSON array in memory
-            var oFilter = new sap.ui.model.Filter(sKeyField, sap.ui.model.FilterOperator.Contains, sValue);
-            oEvent.getSource().getBinding("items").filter([oFilter]);
+            var sEntitySet = oInput.data("entitySet");
+            var sKeyField = oInput.data("keyField");
+            var sDescField = oInput.data("descField");
+            var bClientSide = oInput.data("useClientSide") === "true";
+
+            if (bClientSide) {
+                // Standard local filtering for cached JSON data
+                var oBinding = oDialog.getBinding("items");
+                var aFilters = [];
+                if (sValue) {
+                    aFilters.push(new sap.ui.model.Filter({
+                        filters: [
+                            new sap.ui.model.Filter(sKeyField, sap.ui.model.FilterOperator.Contains, sValue),
+                            new sap.ui.model.Filter(sDescField, sap.ui.model.FilterOperator.Contains, sValue)
+                        ],
+                        and: false
+                    }));
+                }
+                oBinding.filter(aFilters);
+            } else {
+                // SERVER SIDE: Using the 'search' parameter for IV_SEARCH_STRING
+                oDialog.setBusy(true);
+
+                var mParameters = {};
+                if (sValue) {
+                    // This triggers the 'search' logic in Gateway
+                    // Resulting URL: .../EntitySet?search=RAW
+                    mParameters["search"] = sValue;
+                }
+
+                oModel.read("/" + sEntitySet, {
+                    urlParameters: mParameters,
+                    success: function (oData) {
+                        var oLocalModel = oView.getModel("localVH");
+                        oLocalModel.setProperty("/" + sEntitySet, oData.results);
+                        oDialog.setBusy(false);
+                    },
+                    error: function () {
+                        oDialog.setBusy(false);
+                    }
+                });
+            }
         },
 
-        onValueHelpClose: function (oEvent) {
+        onValueHelpClosebackup: function (oEvent) {
             var oSelectedItem = oEvent.getParameter("selectedItem");
             var oInput = this._oInputSource;
 
@@ -378,8 +402,6 @@ sap.ui.define([
                 return oTextObj;
             }).filter(Boolean);
 
-            // DEBUG: console.log("FINAL PAYLOAD", oPayload);
-  
             // Create Call
             oModel.create("/MaterialHeaderSet", oPayload, {
                 success: function (oData) {
@@ -405,7 +427,7 @@ sap.ui.define([
                     });
                 }.bind(this),
                 error: function (oError) {
-                  
+
                     oView.setBusy(false);
 
                     // With the correct backend target, we just need to wait a 

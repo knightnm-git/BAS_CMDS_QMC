@@ -117,22 +117,23 @@
                                         <f:FormElement id="FE4_Grp" label="Material Group">
                                             <f:fields>
                                                 <m:Input id="I4a_Grp" value="{MatlGroup}" 
-                                                         showValueHelp="true" 
-                                                         valueHelpRequest="onValueHelpRequest"
-                                                         editable="{= ${fieldControl>/MaterialHeader/MatlGroup/editable} &amp;&amp; ${ui>/isCreateMode} }" 
-                                                         required="{fieldControl>/MaterialHeader/MatlGroup/required}" 
-                                                         visible="{fieldControl>/MaterialHeader/MatlGroup/visible}" >
+                                                            showValueHelp="true" 
+                                                            valueHelpRequest="onValueHelpRequest"
+                                                            editable="{= ${fieldControl>/MaterialHeader/MatlGroup/editable} &amp;&amp; ${ui>/isCreateMode} }" 
+                                                            required="{fieldControl>/MaterialHeader/MatlGroup/required}" 
+                                                            visible="{fieldControl>/MaterialHeader/MatlGroup/visible}" >
                                                     <m:layoutData>
                                                         <l:GridData id="GD4a" span="XL3 L3 M3 S4" />
                                                     </m:layoutData>
                                                     <m:customData>
                                                         <core:CustomData key="entitySet" value="MatGrpVHSet" />
                                                         <core:CustomData key="title" value="Select Material Group" />
+                                                        <core:CustomData key="useClientSide" value="true" />
                                                         <core:CustomData key="keyField" value="Matkl" /> 
                                                         <core:CustomData key="descField" value="Wgbez" />
                                                         <core:CustomData key="targetDescId" value="I4b_GrpD" />  
                                                     </m:customData>
-    
+
                                                 </m:Input>
                                                 <m:Input id="I4b_GrpD" value="{MatlGroupDesc}" editable="false" />
                                             </f:fields>
@@ -156,6 +157,7 @@
                                                     <m:customData>
                                                         <core:CustomData key="entitySet" value="UOMByDimenSet" />
                                                         <core:CustomData key="title" value="Select Weight UOM" />
+                                                        <core:CustomData key="useClientSide" value="false" />
                                                         <core:CustomData key="keyField" value="Msehi" /> 
                                                         <core:CustomData key="descField" value="Msehl" /> 
                                                     </m:customData>
