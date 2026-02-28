@@ -15,7 +15,7 @@ sap.ui.define([
             if (oModel) {
                 oModel.setDefaultBindingMode(sap.ui.model.BindingMode.TwoWay);
 
-                // 1. Link the OData model to the message processor
+                // Link the OData model to the message processor
                 oMessageManager.registerMessageProcessor(oModel);
 
                 // Initialize models
@@ -38,49 +38,73 @@ sap.ui.define([
         },
         _loadTemplateData: function (sSelectedValue) {
             var oView = this.getView();
-            var self = this; // Reference for inner functions
-            if (!sSelectedValue) return;
+            var oModel = oView.getModel();
+            var self = this;
+
+            if (!sSelectedValue) {
+                return;
+            }
 
             oView.setBusy(true);
-            var sPath = "/MaterialHeaderSet('" + sSelectedValue + "')";
 
-            oView.bindElement({
-                path: sPath,
-                parameters: { expand: "to_Plants,to_Valuations,to_LongTexts" },
-                events: {
-                    dataReceived: function (oData) {
+            oModel.read("/MaterialHeaderSet('" + sSelectedValue + "')", {
+                urlParameters: {
+                    "$expand": "to_Plants,to_Valuations,to_LongTexts"
+                },
+                success: function (oData) {
+                    if (oData && oData.MatlType) {
+                        // Now we have the material type, load config
+                        self._loadFieldControl(oData.MatlType, sSelectedValue);
+                    } else {
                         oView.setBusy(false);
-                        var oReceivedData = oData.getParameter("data");
-
-                        if (!oReceivedData) {
-                            //error handling
-                            return;
-                        }
-                        // Success! Lock the template field
-                        oView.getModel("ui").setProperty("/hasData", true);
-
-                        // Fetch Field Configuration ---
-
-                        var sMatType = oReceivedData.MatlType;
-                        if (sMatType) {
-                            self._loadFieldControl(sMatType);
-                        }
-
-                        oView.getModel().updateBindings(true);
-                    }.bind(this)
+                        sap.m.MessageBox.error("Material Type not found.");
+                    }
+                },
+                error: function (oError) {
+                    oView.setBusy(false);
+                    // Log the error to console to see if it's still 501
+                    console.error(oError);
+                    sap.m.MessageBox.error("Backend Error: Ensure GET_EXPANDED_ENTITY is working for template " + sSelectedValue);
                 }
             });
         },
 
-        _loadFieldControl: function (sMatType) {
+        _loadFieldControl: function (sMatType, sTemplateMat) {
             var oModel = this.getView().getModel();
             var oView = this.getView();
+            var oFieldControlModel = oView.getModel("fieldControl");
+
+            oView.setBusy(true);
 
             oModel.read("/FieldConfigSet", {
                 urlParameters: {
                     "$filter": "MatType eq '" + sMatType + "'"
                 },
                 success: function (oData) {
+
+                    // HARD ERROR CHECK: No configuration results found
+                    if (!oData.results || oData.results.length === 0) {
+                        oView.setBusy(false);
+
+                        // Clear any existing field control data
+                        oFieldControlModel.setData({});
+
+                        // Clear the UI model/Template path so the form stays hidden
+                        this.getView().getModel("ui").setProperty("/hasData", false);
+                        this.getView().byId("materialInput7").setValue("");
+
+                        // Display a Hard Error Popup
+                        sap.m.MessageBox.error("Configuration Error: No field control settings found for Material Type '" + sMatType + "'.", {
+                            title: "Missing Configuration",
+                            details: "The application cannot display the Template Material because the Field Config has not been maintained for this specific Material Type in the backend.",
+                            onClose: function () {
+                                // May need to add something here later
+                            }
+                        });
+                        return; // Stop execution - do not load template data
+                    }
+
+                    // If configuration exists, proceed as normal
                     var oConfigMap = {};
                     oData.results.forEach(function (item) {
                         if (!oConfigMap[item.EntitySetName]) {
@@ -92,13 +116,44 @@ sap.ui.define([
                             visible: (item.FieldOption !== "HID")
                         };
                     });
-                    oView.getModel("fieldControl").setData(oConfigMap);
-                },
+
+                    oFieldControlModel.setData(oConfigMap);
+                    oFieldControlModel.updateBindings(true);
+
+                    // Now that config is loaded, safely load the template data
+                    this._bindTemplateToView(sTemplateMat);
+
+                    oView.setBusy(false);
+                }.bind(this),
                 error: function () {
-                    console.error("Field configuration could not be loaded.");
+                    oView.setBusy(false);
+                    sap.m.MessageBox.show("Technical error retrieving field configuration.");
                 }
             });
         },
+
+        // Helper to perform the actual binding only after config check passes
+        _bindTemplateToView: function (sTemplateMat) {
+            var sPath = "/MaterialHeaderSet('" + sTemplateMat + "')";
+
+            // Force the UI to lock immediately when we start the binding process
+            this.getView().getModel("ui").setProperty("/hasData", true);
+
+            this.getView().bindElement({
+                path: sPath,
+                parameters: {
+                    expand: "to_Plants,to_Valuations,to_LongTexts"
+                },
+                events: {
+                    dataReceived: function () {
+                        // Keep this here as a safety measure for the final data arrival
+                        this.getView().getModel("ui").setProperty("/hasData", true);
+                    }.bind(this)
+                }
+            });
+        },
+
+
         //*************************************//
         // Template Material Value Help Request
         //*************************************//
@@ -163,7 +218,7 @@ sap.ui.define([
             var sDescField = oInput.data("descField");
             var bClientSide = oInput.data("useClientSide") === "true";
 
-            // 1. Fresh fragment every time
+            // Fresh fragment every time
             var oDialog = sap.ui.xmlfragment(oView.getId(), "cos.cmds.qmc.cmdsqmc.view.fragments.ValueHelpDialog", this);
             oView.addDependent(oDialog);
             oDialog.setTitle(sTitle);
@@ -209,9 +264,49 @@ sap.ui.define([
         },
 
         onValueHelpConfirm: function (oEvent) {
-            // ... selection logic ...
+            var oSelectedItem = oEvent.getParameter("selectedItem");
+            var oInput = this._oInputSource; // This was set in onValueHelpRequest
+
+            if (!oSelectedItem || !oInput) {
+                oEvent.getSource().destroy();
+                return;
+            }
+
+            // Get the Key and Description from the selected item's context
+            // We use the JSON model 'localVH' which was bound in onValueHelpRequest
+            var oContext = oSelectedItem.getBindingContext("localVH");
+            var sKeyField = oInput.data("keyField");
+            var sDescField = oInput.data("descField");
+
+            var sKey = oContext.getProperty(sKeyField);
+            var sDesc = oContext.getProperty(sDescField);
+
+            // Update the technical value in the Input field
+            oInput.setValue(sKey);
+
+            // Update the Description field if a target ID was provided in CustomData
+            var sTargetDescId = oInput.data("targetDescId");
+            if (sTargetDescId) {
+                var oDescInput = this.byId(sTargetDescId);
+                if (oDescInput) {
+                    oDescInput.setValue(sDesc);
+                }
+            }
+
+            // Update the OData Model context so the change is sent to SAP
+            var oBinding = oInput.getBinding("value");
+            if (oBinding) {
+                var sPath = oBinding.getPath();
+                var oMainContext = oInput.getBindingContext(); // The OData context
+                if (oMainContext) {
+                    oMainContext.getModel().setProperty(sPath, sKey, oMainContext);
+                }
+            }
+
+            // Cleanup the dialog fragment
             oEvent.getSource().destroy();
         },
+
         onValueHelpClose: function (oEvent) {
             oEvent.getSource().destroy();
         },
@@ -249,7 +344,7 @@ sap.ui.define([
                 var mParameters = {};
                 if (sValue) {
                     // This triggers the 'search' logic in Gateway
-                    // Resulting URL: .../EntitySet?search=RAW
+                    // Resulting URL: .../EntitySet?search=xxx
                     mParameters["search"] = sValue;
                 }
 
@@ -275,10 +370,10 @@ sap.ui.define([
                 var sKey = oSelectedItem.getTitle();
                 var sDesc = oSelectedItem.getDescription();
 
-                // 1. Update the Main Input (The technical key)
+                // Update the Main Input (The technical key)
                 oInput.setValue(sKey);
 
-                // 2. Update the Description Field via ID (targetDescId from your XML)
+                // Update the Description Field via ID (targetDescId from your XML)
                 var sTargetDescId = oInput.data("targetDescId");
                 if (sTargetDescId) {
                     var oDescInput = this.byId(sTargetDescId);
@@ -297,31 +392,32 @@ sap.ui.define([
             }
         },
 
-
-
         onReset: function () {
             var oView = this.getView();
             var oInput = oView.byId("materialInput7");
-            var self = this;
 
             MessageBox.confirm("This will clear all current data. Proceed?", {
                 onClose: function (sAction) {
                     if (sAction === MessageBox.Action.OK) {
-                        // Reset the Master Switches
+                        // 1. Reset Master UI States
                         var oUiModel = oView.getModel("ui");
                         oUiModel.setProperty("/isCreateMode", true);
                         oUiModel.setProperty("/hasData", false);
 
-                        // Clear the Input and Field Config
-                        oInput.setValue("");
+                        // Clear Field Configuration
+                        // This forces all fields back to read-only based on our new formatter logic
                         if (oView.getModel("fieldControl")) {
                             oView.getModel("fieldControl").setData({});
                         }
 
-                        // Unbind the element to stop the 'hanging' expansion
+                        // Clear Input and Unbind
+                        oInput.setValue("");
                         oView.unbindElement();
 
-                        // Force a refresh of the binding to ensure tables (SmartTables) clear
+                        // Clear OData Messages (if any are hanging around)
+                        sap.ui.getCore().getMessageManager().removeAllMessages();
+
+                        // Force UI Refresh
                         oView.getModel().updateBindings(true);
 
                         MessageToast.show("Form reset and ready for new template.");
@@ -381,7 +477,7 @@ sap.ui.define([
             oPayload.to_LongTexts = [];
 
             // Backend naming alignment
-            oPayload.Matnr = "";
+            oPayload.Material = "";
             delete oPayload.Material;
             delete oPayload.to_Longtexts;
 
@@ -407,18 +503,18 @@ sap.ui.define([
                 success: function (oData) {
                     oView.setBusy(false);
 
-                    var sNewMatnr = oData.Matnr; // The generated number from SAP
-                    // -- NEW: Flip the Master Switch to Lock the UI ---
+                    var sNewMaterial = oData.Material; // The generated number from SAP
+                    // Flip the Master Switch to Lock the UI ---
                     this.getView().getModel("ui").setProperty("/isCreateMode", false);
 
-                    MessageBox.success("Material " + sNewMatnr + " created successfully!", {
+                    MessageBox.success("Material " + sNewMaterial + " created successfully!", {
                         actions: ["Display Material", MessageBox.Action.OK],
                         emphasizedAction: "Display Material",
                         onClose: function (sAction) {
                             if (sAction === "Display Material") {
                                 // Navigate to the display route (adjust 'display' to your route name)
                                 this.getOwnerComponent().getRouter().navTo("display", {
-                                    Matnr: sNewMatnr
+                                    Material: sNewMaterial
                                 });
                                 //   } else {
                                 // this.onReset(); // Clear the form for the next one
@@ -601,10 +697,28 @@ sap.ui.define([
         formatIsCreateMode: function (bIsCreateMode) {
             return bIsCreateMode === true;
         },
+
+        // Flip the logic: Only return true if both are explicitly true
+        formatCellEditable: function (bFieldEditable, bIsCreateMode) {
+            // If config isn't loaded (undefined), this now returns false.
+            return bFieldEditable === true && bIsCreateMode === true;
+        },
         // Generic Formatter for Editability: 
         // Checks if field is editable in fieldControl AND if app is in Create Mode
-        formatCellEditable: function (bFieldEditable, bIsCreateMode) {
-            return (bFieldEditable !== false) && (bIsCreateMode === true);
+        formatCellEditablebackup: function (bFieldEditable, bIsCreateMode) {
+            // 1. If we aren't in Create Mode, definitely not editable
+            if (!bIsCreateMode) {
+                return false;
+            }
+
+            // 2. If bFieldEditable is undefined (meaning the field isn't in the 
+            // fieldControl model yet), return false (Read Only)
+            if (bFieldEditable === undefined || bFieldEditable === null) {
+                return false;
+            }
+
+            // 3. Otherwise, return the actual boolean value from the config
+            return bFieldEditable;
         },
 
         // Generic Formatter for Visibility:
