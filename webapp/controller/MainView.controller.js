@@ -3,8 +3,14 @@ sap.ui.define([
     "sap/m/MessageToast",
     "sap/m/MessageBox",
     "sap/ui/model/Filter",
-    "sap/ui/model/FilterOperator"
-], function (Controller, MessageToast, MessageBox, Filter, FilterOperator) {
+    "sap/ui/model/FilterOperator",
+    "sap/ui/comp/valuehelpdialog/ValueHelpDialog",
+    "sap/ui/comp/filterbar/FilterBar",
+    "sap/ui/comp/filterbar/FilterGroupItem",
+    "sap/m/Input",
+    "sap/m/MessageStrip"
+], function (Controller, MessageToast, MessageBox, Filter, FilterOperator,
+    ValueHelpDialog, FilterBar, FilterGroupItem, Input, MessageStrip) {
     "use strict";
 
     return Controller.extend("cos.cmds.qmc.cmdsqmc.controller.MainView", {
@@ -31,11 +37,6 @@ sap.ui.define([
             }
         },
 
-        onTemplateSelect: function (oEvent) {
-            var sSelectedValue = oEvent.getParameter("value");
-            this._loadTemplateData(sSelectedValue);
-
-        },
         _loadTemplateData: function (sSelectedValue) {
             var oView = this.getView();
             var oModel = oView.getModel();
@@ -47,13 +48,15 @@ sap.ui.define([
 
             oView.setBusy(true);
 
+            // Clear existing messages before the new request
+            sap.ui.getCore().getMessageManager().removeAllMessages();
+
             oModel.read("/MaterialHeaderSet('" + sSelectedValue + "')", {
                 urlParameters: {
                     "$expand": "to_Plants,to_Valuations,to_LongTexts"
                 },
                 success: function (oData) {
                     if (oData && oData.MatlType) {
-                        // Now we have the material type, load config
                         self._loadFieldControl(oData.MatlType, sSelectedValue);
                     } else {
                         oView.setBusy(false);
@@ -62,9 +65,16 @@ sap.ui.define([
                 },
                 error: function (oError) {
                     oView.setBusy(false);
-                    // Log the error to console to see if it's still 501
-                    console.error(oError);
-                    sap.m.MessageBox.error("Backend Error: Ensure GET_EXPANDED_ENTITY is working for template " + sSelectedValue);
+
+                    // get the specific backend message
+                    var aMessages = self._parseODataError(oError);
+                    var sMessage = (aMessages.length > 0) ? aMessages[0].message : "An unexpected error occurred.";
+
+                    // Display the message. 
+                    // The error is already in the MessageManager thanks to onInit registration.
+                    // Just point the user to the popover.
+                    var oBtn = self.byId("materialInput7"); // Anchor to the input field
+                    self._getOutputMessagePopover().openBy(oBtn);
                 }
             });
         },
@@ -98,7 +108,7 @@ sap.ui.define([
                             title: "Missing Configuration",
                             details: "The application cannot display the Template Material because the Field Config has not been maintained for this specific Material Type in the backend.",
                             onClose: function () {
-                                // May need to add something here later
+                                // I may need to add something here later
                             }
                         });
                         return; // Stop execution - do not load template data
@@ -110,6 +120,7 @@ sap.ui.define([
                         if (!oConfigMap[item.EntitySetName]) {
                             oConfigMap[item.EntitySetName] = {};
                         }
+                        //Build some properties that will then be used as expression bindings on the view
                         oConfigMap[item.EntitySetName][item.FieldName] = {
                             editable: (item.FieldOption === "REQ" || item.FieldOption === "OPT"),
                             required: (item.FieldOption === "REQ"),
@@ -120,7 +131,7 @@ sap.ui.define([
                     oFieldControlModel.setData(oConfigMap);
                     oFieldControlModel.updateBindings(true);
 
-                    // Now that config is loaded, safely load the template data
+                    // Now that config is loaded, load the template data
                     this._bindTemplateToView(sTemplateMat);
 
                     oView.setBusy(false);
@@ -154,9 +165,9 @@ sap.ui.define([
         },
 
 
-        //*************************************//
-        // Template Material Value Help Request
-        //*************************************//
+        //******************************************************************//
+        // Template Material Value Help Request - Client-side value request
+        //******************************************************************//
         onMaterialValueHelpRequest: function () {
             var oView = this.getView();
             if (!this._oSelectDialog) {
@@ -194,18 +205,170 @@ sap.ui.define([
             }
         },
 
+        // Triggered when entering Template Material manually or pressing Enter
+        // Handles manual typing and pressing Enter
+        onTemplateSelect: function (oEvent) {
+            var sSelectedValue = oEvent.getSource().getValue();
+
+            if (sSelectedValue) {
+                sSelectedValue = sSelectedValue.trim().toUpperCase();
+                oEvent.getSource().setValue(sSelectedValue);
+
+                // MANUALLY UPDATE THE MODEL
+                var oModel = this.getView().getModel();
+                oModel.setProperty("/TemplateMat", sSelectedValue);
+
+                this._loadTemplateData(sSelectedValue);
+            }
+        },
+
+        // Handles selection from the Value Help
         onMatValueConfirm: function (oEvent) {
             var oSelectedItem = oEvent.getParameter("selectedItem");
             if (oSelectedItem) {
                 var sMaterial = oSelectedItem.getBindingContext().getProperty("TemplateMat");
-                this.getView().byId("materialInput7").setValue(sMaterial);
+                var oInput = this.getView().byId("materialInput7");
+
+                // Update the UI visually
+                oInput.setValue(sMaterial);
+
+                // MANUALLY UPDATE THE MODEL
+                // Since we removed/changed the binding, we must push the value to the model
+                var oModel = this.getView().getModel();
+                oModel.setProperty("/TemplateMat", sMaterial);
+
+                // Load the data as before
                 this._loadTemplateData(sMaterial);
             }
         },
 
-        //************************************************//
+        //*******************************************************************//
+        // Manufacturer Value Help Request - Server Side Value Help Request
+        //*******************************************************************//
+        onMfrValueHelpRequest: function (oEvent) {
+            var oInput = oEvent.getSource();
+            var oView = this.getView();
+            var oModel = oView.getModel();
+
+            if (!this._oMfrValueHelpDialog) {
+                var oMfrVHModel = new sap.ui.model.json.JSONModel({
+                    items: [],
+                    showMaxWarning: false
+                });
+                oView.setModel(oMfrVHModel, "mfrVH");
+
+                // Use the mapped variable 'ValueHelpDialog'
+                this._oMfrValueHelpDialog = new ValueHelpDialog({
+                    title: "Select Manufacturer",
+                    supportMultiselect: false,
+                    key: "Lifnr",
+                    descriptionKey: "Mcod1",
+                    basicSearchCallback: function () { return; },
+
+                    ok: function (oControlEvent) {
+                        var aTokens = oControlEvent.getParameter("tokens");
+                        if (aTokens.length > 0) {
+                            var sKey = aTokens[0].getKey();
+                            oInput.setValue(sKey);
+                            var oBinding = oInput.getBinding("value");
+                            if (oBinding) {
+                                oInput.getBindingContext().getModel().setProperty(oBinding.getPath(), sKey, oInput.getBindingContext());
+                            }
+                        }
+                        this._oMfrValueHelpDialog.close();
+                    }.bind(this),
+                    cancel: function () {
+                        this._oMfrValueHelpDialog.close();
+                    }.bind(this)
+                });
+
+                // Use the mapped variable 'FilterBar'
+                var oFilterBar = new FilterBar({
+                    advancedMode: true,
+                    useToolbar: true,
+                    showGoOnFB: true, // This enables the 'Enter' key search
+                    filterGroupItems: [
+                        new FilterGroupItem({ groupName: "G1", name: "Lifnr", label: "Supplier", control: new Input({ name: "Lifnr" }) }),
+                        new FilterGroupItem({ groupName: "G1", name: "Mcod1", label: "Name", control: new Input({ name: "Mcod1" }) }),
+                        new FilterGroupItem({ groupName: "G1", name: "Mcod3", label: "Search Term", control: new Input({ name: "Mcod3" }) }),
+                        new FilterGroupItem({ groupName: "G1", name: "Pstlz", label: "Post Code", control: new Input({ name: "Pstlz" }) })
+                    ],
+                    search: function (oEvt) {
+                        var aSelectionSet = oEvt.getParameter("selectionSet");
+                        var aFilters = aSelectionSet.reduce(function (aResult, oControl) {
+                            if (oControl.getValue()) {
+                                aResult.push(new Filter(oControl.getName(), "Contains", oControl.getValue()));
+                            }
+                            return aResult;
+                        }, []);
+
+                        var oTable = this._oMfrValueHelpDialog.getTable();
+                        oTable.setBusy(true);
+
+                        oModel.read("/MfrNoVHSet", {
+                            filters: aFilters,
+                            urlParameters: { "$top": 100 },
+                            success: function (oData) {
+                                var aResults = oData.results || [];
+                                
+                                oView.getModel("mfrVH").setProperty("/items", aResults);
+                                oView.getModel("mfrVH").setProperty("/showMaxWarning", aResults.length >= 100);
+
+                                oTable.bindRows("mfrVH>/items");
+                                oTable.setBusy(false);
+                            }.bind(this),
+                            error: function () { oTable.setBusy(false); }
+                        });
+                    }.bind(this)
+                });
+
+                // Use the mapped variable 'MessageStrip'
+                oFilterBar.addContent(new MessageStrip({
+                    text: "Only the first 100 results are shown. Refine filters if needed.",
+                    type: "Information",
+                    showIcon: true,
+                    visible: "{mfrVH>/showMaxWarning}"
+                }));
+
+                this._oMfrValueHelpDialog.setFilterBar(oFilterBar);
+
+                this._oMfrValueHelpDialog.getTableAsync().then(function (oTable) {
+                    oTable.setModel(new sap.ui.model.json.JSONModel({
+                        cols: [
+                            { label: "Supplier", template: "mfrVH>Lifnr" },
+                            { label: "Name", template: "mfrVH>Mcod1" },
+                            { label: "Search Term", template: "mfrVH>Mcod3" },
+                            { label: "Post Code", template: "mfrVH>Pstlz" }
+                        ]
+                    }), "columns");
+                    oTable.setModel(oView.getModel("mfrVH"), "mfrVH");
+                }.bind(this));
+
+                oView.addDependent(this._oMfrValueHelpDialog);
+            }
+            this._oMfrValueHelpDialog.open();
+        },
+
+        //*******************************************************//
         // Generic Value Help Requests (for multiple fields)
-        //***********************************************//
+        //    can be Client Side or Server side
+        //    Can be configured simply by adding the below properties
+        //       to the input field on the view
+        // <m:Input 
+        //      id="I4a_Grp" 
+        //      value="{MatlGroup}" 
+        //      showValueHelp="true" 
+        //      valueHelpRequest="onValueHelpRequest"
+        //      <m:customData>
+        //          <core:CustomData key="entitySet" value="MatGrpVHSet" />
+        //          <core:CustomData key="title" value="Select Material Group" />
+        //          <core:CustomData key="useClientSide" value="true" />
+        //          <core:CustomData key="keyField" value="Matkl" />
+        //          <core:CustomData key="descField" value="Wgbez" />
+        //          <core:CustomData key="targetDescId" value="I4b_GrpD" />
+        //      </m:customData>
+        //  </m:Input>
+        //******************************************************//
         onValueHelpRequest: function (oEvent) {
             var oInput = oEvent.getSource();
             this._oInputSource = oInput;
@@ -426,6 +589,7 @@ sap.ui.define([
             });
         },
         onCreateMaterial: function () {
+
             // Clear previous validation state
             sap.ui.getCore().getMessageManager().removeAllMessages();
             var oView = this.getView();
@@ -497,6 +661,8 @@ sap.ui.define([
 
                 return oTextObj;
             }).filter(Boolean);
+
+            // DEBUG: console.log("FINAL PAYLOAD", oPayload);
 
             // Create Call
             oModel.create("/MaterialHeaderSet", oPayload, {
@@ -590,7 +756,6 @@ sap.ui.define([
             this.getView().addDependent(oDialog);
             oDialog.open();
         },
-
         _getOutputMessagePopover: function () {
             if (!this._oMessagePopover) {
                 this._oMessagePopover = new sap.m.MessagePopover({
@@ -611,61 +776,7 @@ sap.ui.define([
             }
             return this._oMessagePopover;
         },
-        _parseODataError: function (oError) {
-            var aMessages = [];
-            try {
-                // SAP OData errors are usually stringified JSON in the .responseText or .message property
-                var oResponse = JSON.parse(oError.responseText || oError.message);
 
-                // If the backend returns the array directly or inside error.innererror.errordetails
-                if (oResponse.error && oResponse.error.innererror && oResponse.error.innererror.errordetails) {
-                    aMessages = oResponse.error.innererror.errordetails;
-                } else if (Array.isArray(oResponse)) {
-                    aMessages = oResponse;
-                }
-            } catch (e) {
-                aMessages.push({
-                    message: "An unexpected error occurred.",
-                    type: "Error"
-                });
-            }
-            return aMessages;
-        },
-        _showMessageDialog: function (aMessages) {
-            var oMessageModel = new sap.ui.model.json.JSONModel(aMessages);
-
-            var oMessageTemplate = new sap.m.MessageItem({
-                type: "{type}",
-                title: "{title}",
-                description: "{description}"
-            });
-
-            var oMessageView = new sap.m.MessageView({
-                items: {
-                    path: "/",
-                    template: oMessageTemplate
-                }
-            });
-
-            oMessageView.setModel(oMessageModel);
-
-            var oDialog = new sap.m.Dialog({
-                title: "Test Run Results / Error Log",
-                content: oMessageView,
-                contentHeight: "50%",
-                contentWidth: "50%",
-                verticalScrolling: false,
-                beginButton: new sap.m.Button({
-                    text: "Close",
-                    press: function () {
-                        oDialog.close();
-                    }
-                })
-            });
-
-            this.getView().addDependent(oDialog);
-            oDialog.open();
-        },
         onRefreshRecentTable: function () {
             var oTable = this.byId("tblRecentMaterials");
             var oBinding = oTable.getBinding("items");
@@ -673,7 +784,6 @@ sap.ui.define([
                 oBinding.refresh();
             }
         },
-
 
         // Formatter to handle boolean visibility/editability from the fieldControl model
         formatFieldVisible: function (sProperty, sField) {
@@ -753,6 +863,34 @@ sap.ui.define([
             }
 
             return sTime;
-        }
+        },
+        onPriceCtrlChange: function (oEvent) {
+            var oInput = oEvent.getSource();
+            var sNewValue = oEvent.getParameter("value").toUpperCase().trim(); // Ensure uppercase/no spaces
+            var oContext = oInput.getBindingContext();
+
+            if (!oContext) return;
+
+            // 1. Validation Logic
+            var bValid = (sNewValue === "S" || sNewValue === "V");
+
+            if (!bValid && sNewValue !== "") {
+                // Set Error State
+                oInput.setValueState("Error");
+                oInput.setValueStateText("Invalid Price Control. Please enter 'S' (Standard) or 'V' (Moving Average).");
+            } else {
+                // Clear Error State
+                oInput.setValueState("None");
+                oInput.setValueStateText("");
+
+                // 2. Clear values of the "inactive" fields
+                if (sNewValue === "S") {
+                    oContext.setProperty("MovingPr", "0.00");
+                } else if (sNewValue === "V") {
+                    oContext.setProperty("StdPrice", "0.00");
+                }
+            }
+        },
+
     });
 });

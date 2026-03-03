@@ -45,12 +45,12 @@
                     <m:Label id="Lbl1.0" text="Template Material" width="150px" labelFor="materialInput7" />
                     <m:Input 
                         id="materialInput7" 
-                        value="{TemplateMat}" 
                         editable="{= !${ui>/hasData} &amp;&amp; !!${ui>/isCreateMode} }"
                         placeholder="Enter Template Material..." 
                         showValueHelp="true" 
                         valueHelpRequest=".onMaterialValueHelpRequest" 
-                        change=".onTemplateSelect" />  
+                        change=".onTemplateSelect"
+                        submit=".onTemplateSelect" />  
                     <m:Button 
                         id="btnReset" 
                         icon="sap-icon://refresh" 
@@ -116,25 +116,25 @@
                                         </f:FormElement>
                                         <f:FormElement id="FE4_Grp" label="Material Group" 
                                                         visible="{= ${fieldControl>/MaterialHeader/MatlGroup/visible} === true }">
-                                            <m:Input 
-                                                id="I4a_Grp" 
-                                                value="{MatlGroup}" 
-                                                showValueHelp="true" 
-                                                valueHelpRequest="onValueHelpRequest"
-                                                editable="{= !!${fieldControl>/MaterialHeader/MatlGroup/editable} &amp;&amp; !!${ui>/isCreateMode} }" 
-                                                required="{= !!${fieldControl>/MaterialHeader/MatlGroup/required} }">
-                                                <m:layoutData>
-                                                    <l:GridData id="GD4a" span="XL3 L3 M3 S4" />
-                                                </m:layoutData>
-                                                <m:customData>
-                                                    <core:CustomData key="entitySet" value="MatGrpVHSet" />
-                                                    <core:CustomData key="title" value="Select Material Group" />
-                                                    <core:CustomData key="useClientSide" value="true" />
-                                                    <core:CustomData key="keyField" value="Matkl" />
-                                                    <core:CustomData key="descField" value="Wgbez" />
-                                                    <core:CustomData key="targetDescId" value="I4b_GrpD" />
-                                                </m:customData>
-                                            </m:Input>
+                                                        <m:Input 
+                                                            id="I4a_Grp" 
+                                                            value="{MatlGroup}" 
+                                                            showValueHelp="true" 
+                                                            valueHelpRequest="onValueHelpRequest"
+                                                            editable="{= !!${fieldControl>/MaterialHeader/MatlGroup/editable} &amp;&amp; !!${ui>/isCreateMode} }" 
+                                                            required="{= !!${fieldControl>/MaterialHeader/MatlGroup/required} }">
+                                                            <m:layoutData>
+                                                                <l:GridData id="GD4a" span="XL3 L3 M3 S4" />
+                                                            </m:layoutData>
+                                                            <m:customData>
+                                                                <core:CustomData key="entitySet" value="MatGrpVHSet" />
+                                                                <core:CustomData key="title" value="Select Material Group" />
+                                                                <core:CustomData key="useClientSide" value="true" />
+                                                                <core:CustomData key="keyField" value="Matkl" />
+                                                                <core:CustomData key="descField" value="Wgbez" />
+                                                                <core:CustomData key="targetDescId" value="I4b_GrpD" />
+                                                            </m:customData>
+                                                        </m:Input>
                                             <m:Input id="I4b_GrpD" value="{MatlGroupDesc}" editable="false" />
                                         </f:FormElement>
                                         <f:FormElement id="FE6_Gross" label="Gross Weight" 
@@ -207,6 +207,8 @@
                                             <m:Input 
                                                 id="I9_MfrNo" 
                                                 value="{MfrNo}" 
+                                                showValueHelp="true"
+                                                valueHelpRequest=".onMfrValueHelpRequest"
                                                 editable="{= !!${fieldControl>/MaterialHeader/MfrNo/editable} &amp;&amp; !!${ui>/isCreateMode} }" 
                                                 required="{= !!${fieldControl>/MaterialHeader/MfrNo/required} }" />
                                         </f:FormElement>
@@ -613,22 +615,21 @@
                                             visible="{= ${fieldControl>/ValuationDetails/ValCat/visible} === true }" />
                                         <m:Input 
                                             id="iptPriceCtrl" 
-                                            value="{PriceCtrl}" 
+                                            value="{PriceCtrl}"
+                                            change=".onPriceCtrlChange"
                                             editable="{= !!${fieldControl>/ValuationDetails/PriceCtrl/editable} &amp;&amp; !!${ui>/isCreateMode} }" 
                                             required="{= !!${fieldControl>/ValuationDetails/PriceCtrl/required} }"
                                             visible="{= ${fieldControl>/ValuationDetails/PriceCtrl/visible} === true }" />
                                         <m:Input 
                                             id="iptStdPrice" 
                                             value="{StdPrice}" 
-                                            editable="{= !!${fieldControl>/ValuationDetails/StdPrice/editable} &amp;&amp; !!${ui>/isCreateMode} }" 
-                                            required="{= !!${fieldControl>/ValuationDetails/StdPrice/required} }"
-                                            visible="{= ${fieldControl>/ValuationDetails/StdPrice/visible} === true }" />
+                                            editable="{= !!${fieldControl>/ValuationDetails/StdPrice/editable} &amp;&amp; !!${ui>/isCreateMode} &amp;&amp; ${PriceCtrl} === 'S' }" 
+                                            required="{= !!${fieldControl>/ValuationDetails/StdPrice/required} &amp;&amp; ${PriceCtrl} === 'S' }"                                            visible="{= ${fieldControl>/ValuationDetails/StdPrice/visible} === true }" />
                                         <m:Input 
                                             id="iptMovingPr" 
                                             value="{MovingPr}" 
-                                            editable="{= !!${fieldControl>/ValuationDetails/MovingPr/editable} &amp;&amp; !!${ui>/isCreateMode} }" 
-                                            required="{= !!${fieldControl>/ValuationDetails/MovingPr/required} }"
-                                            visible="{= ${fieldControl>/ValuationDetails/MovingPr/visible} === true }" />
+                                            editable="{= !!${fieldControl>/ValuationDetails/MovingPr/editable} &amp;&amp; !!${ui>/isCreateMode} &amp;&amp; ${PriceCtrl} === 'V' }" 
+                                            required="{= !!${fieldControl>/ValuationDetails/MovingPr/required} &amp;&amp; ${PriceCtrl} === 'V' }"                                            visible="{= ${fieldControl>/ValuationDetails/MovingPr/visible} === true }" />
                                         <m:Input 
                                             id="iptCurrency" 
                                             value="{Currency}" 
