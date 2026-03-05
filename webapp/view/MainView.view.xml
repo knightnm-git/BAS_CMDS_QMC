@@ -158,11 +158,13 @@
                                                     <l:GridData id="GD6b" span="XL2 L2 M2 S3"/>
                                                 </m:layoutData>
                                                 <m:customData>
-                                                    <core:CustomData key="entitySet" value="UOMByDimenSet" />
+                                                    <core:CustomData key="entitySet" value="UOMByDimenVHSet" />
                                                     <core:CustomData key="title" value="Select Unit of Weight" />
                                                     <core:CustomData key="useClientSide" value="true" />
                                                     <core:CustomData key="keyField" value="Msehi" />
                                                     <core:CustomData key="descField" value="Msehl" />
+                                                    <core:CustomData key="fixedFilterField" value="Dimid" />
+                                                    <core:CustomData key="fixedFilterValue" value="MASS" />
                                                 </m:customData>
                                             </m:Input>
                                         </f:FormElement>
@@ -175,14 +177,7 @@
                                                 required="{= !!${fieldControl>/MaterialHeader/NetWeight/required} }">
                                                 <m:layoutData><l:GridData id="GD7a" span="XL4 L4 M4 S7"/></m:layoutData>
                                             </m:Input>
-                                            <m:Input 
-                                                id="I7b_NWtU" 
-                                                value="{UnitOfWt}" 
-                                                editable="{= !!${fieldControl>/MaterialHeader/UnitOfWt/editable} &amp;&amp; !!${ui>/isCreateMode} }" 
-                                                required="{= !!${fieldControl>/MaterialHeader/UnitOfWt/required} }"
-                                                visible="{= ${fieldControl>/MaterialHeader/UnitOfWt/visible} === true }">
-                                                <m:layoutData><l:GridData id="GD7b" span="XL2 L2 M2 S3"/></m:layoutData>
-                                            </m:Input>
+                 
                                         </f:FormElement>
                                         <f:FormElement id="FE8_Vol" label="Volume" 
                                                         visible="{= ${fieldControl>/MaterialHeader/Volume/visible} === true }">
@@ -198,7 +193,19 @@
                                                 value="{Volumeunit}" 
                                                 editable="{= !!${fieldControl>/MaterialHeader/Volumeunit/editable} &amp;&amp; !!${ui>/isCreateMode} }" 
                                                 required="{= !!${fieldControl>/MaterialHeader/Volumeunit/required} }"
-                                                visible="{= ${fieldControl>/MaterialHeader/Volumeunit/visible} === true }">
+                                                visible="{= ${fieldControl>/MaterialHeader/Volumeunit/visible} === true }"
+                                                showValueHelp="true" 
+                                                valueHelpRequest="onValueHelpRequest" >
+                                                <m:customData>
+                                                    <core:CustomData key="entitySet" value="UOMByDimenVHSet" />
+                                                    <core:CustomData key="title" value="Select Unit of Volume" />
+                                                    <core:CustomData key="useClientSide" value="true" />
+                                                    <core:CustomData key="keyField" value="Msehi" />
+                                                    <core:CustomData key="descField" value="Msehl" />
+                                                    <core:CustomData key="fixedFilterField" value="Dimid" />
+                                                    <core:CustomData key="fixedFilterValue" value="VOLUME" />
+                                                </m:customData>
+                                            
                                                 <m:layoutData><l:GridData id="GD8b" span="XL2 L2 M2 S3"/></m:layoutData>
                                             </m:Input>
                                         </f:FormElement>
@@ -223,74 +230,133 @@
                                     </f:formElements>
                                 </f:FormContainer>
 
-                                <f:FormContainer id="FC2">
+                                <f:FormContainer id="FC2_Attributes">
                                     <f:layoutData>
                                         <l:GridData id="FC2_GD1" span="XL3 L3 M6 S12" />
                                     </f:layoutData>
                                     <f:formElements>
-                                        <f:FormElement id="FC2_Fld1" label="Material Type" 
+                                        <f:FormElement id="FC2_FE_MatlType" label="Material Type" 
                                                         visible="{= ${fieldControl>/MaterialHeader/MatlType/visible} === true }">
                                             <m:Input 
                                                 id="MatlType" 
                                                 value="{MatlType}" 
                                                 editable="{= !!${fieldControl>/MaterialHeader/MatlType/editable} &amp;&amp; !!${ui>/isCreateMode} }" 
-                                                required="{= !!${fieldControl>/MaterialHeader/MatlType/required} }" />
+                                                required="{= !!${fieldControl>/MaterialHeader/MatlType/required} }">
+                                                <m:layoutData><l:GridData id="GD_MatlType" span="XL4 L4 M4 S6"/></m:layoutData>
+                                            </m:Input>
                                         </f:FormElement>
-                                        <f:FormElement id="FC2_Fld2" label="Base UOM" 
+                                        
+                                        <f:FormElement id="FC2_FE_BaseUom" label="Base UOM" 
                                                         visible="{= ${fieldControl>/MaterialHeader/BaseUom/visible} === true }">
                                             <m:Input 
                                                 id="BaseUom" 
                                                 value="{BaseUom}" 
                                                 editable="{= !!${fieldControl>/MaterialHeader/BaseUom/editable} &amp;&amp; !!${ui>/isCreateMode} }" 
-                                                required="{= !!${fieldControl>/MaterialHeader/BaseUom/required} }" />
+                                                required="{= !!${fieldControl>/MaterialHeader/BaseUom/required} }"
+                                                showValueHelp="true" 
+                                                valueHelpRequest="onValueHelpRequest" >
+                                                <m:customData>
+                                                    <core:CustomData key="entitySet" value="BaseUomVHSet" />
+                                                    <core:CustomData key="title" value="Select Base Unit of Measure" />
+                                                    <core:CustomData key="useClientSide" value="true" />
+                                                    <core:CustomData key="keyField" value="Msehi" />
+                                                    <core:CustomData key="descField" value="Msehl" />
+                                                </m:customData>     
+                                                <m:layoutData><l:GridData id="GD_BaseUom" span="XL2 L2 M2 S3"/></m:layoutData>
+                                            </m:Input>
                                         </f:FormElement>
-                                        <f:FormElement id="FC2_Fld3" label="Storage Cond." 
+
+                                        <f:FormElement id="FC2_FE_StorConds" label="Storage Cond." 
                                                         visible="{= ${fieldControl>/MaterialHeader/StorConds/visible} === true }">
                                             <m:Input 
                                                 id="StorConds" 
                                                 value="{StorConds}" 
                                                 editable="{= !!${fieldControl>/MaterialHeader/StorConds/editable} &amp;&amp; !!${ui>/isCreateMode} }" 
-                                                required="{= !!${fieldControl>/MaterialHeader/StorConds/required} }" />
+                                                required="{= !!${fieldControl>/MaterialHeader/StorConds/required} }">
+                                                <m:layoutData><l:GridData id="GD_StorConds" span="XL2 L2 M2 S3"/></m:layoutData>
+                                            </m:Input>
                                         </f:FormElement>
-                                        <f:FormElement id="FC2_Fld4" label="Temp. Cond." 
+
+                                        <f:FormElement id="FC2_FE_TempConds" label="Temp. Cond." 
                                                         visible="{= ${fieldControl>/MaterialHeader/TempConds/visible} === true }">
                                             <m:Input 
                                                 id="TempConds" 
                                                 value="{TempConds}" 
                                                 editable="{= !!${fieldControl>/MaterialHeader/TempConds/editable} &amp;&amp; !!${ui>/isCreateMode} }" 
-                                                required="{= !!${fieldControl>/MaterialHeader/TempConds/required} }" />
+                                                required="{= !!${fieldControl>/MaterialHeader/TempConds/required} }">
+                                                <m:layoutData><l:GridData id="GD_TempConds" span="XL2 L2 M2 S3"/></m:layoutData>
+                                            </m:Input>
                                         </f:FormElement>
-                                        <f:FormElement id="FC2_Fld5" label="Trans. Group" 
+
+                                        <f:FormElement id="FC2_FE_TransGrp" label="Trans. Group" 
                                                         visible="{= ${fieldControl>/MaterialHeader/TransGrp/visible} === true }">
                                             <m:Input 
                                                 id="TransGrp" 
                                                 value="{TransGrp}" 
                                                 editable="{= !!${fieldControl>/MaterialHeader/TransGrp/editable} &amp;&amp; !!${ui>/isCreateMode} }" 
-                                                required="{= !!${fieldControl>/MaterialHeader/TransGrp/required} }" />
+                                                required="{= !!${fieldControl>/MaterialHeader/TransGrp/required} }"
+                                                showValueHelp="true" 
+                                                valueHelpRequest="onValueHelpRequest" >
+                                                <m:customData>
+                                                    <core:CustomData key="entitySet" value="TransGrpVHSet" />
+                                                    <core:CustomData key="title" value="Select Transportation Group" />
+                                                    <core:CustomData key="useClientSide" value="true" />
+                                                    <core:CustomData key="keyField" value="Tragr" />
+                                                    <core:CustomData key="descField" value="Vtext" />
+                                                </m:customData>
+                                                <m:layoutData><l:GridData id="GD_TransGrp" span="XL4 L4 M4 S6"/></m:layoutData>
+                                            </m:Input>
                                         </f:FormElement>
-                                        <f:FormElement id="FC2_Fld6" label="Division" 
+
+                                        <f:FormElement id="FC2_FE_Division" label="Division" 
                                                         visible="{= ${fieldControl>/MaterialHeader/Division/visible} === true }">
                                             <m:Input 
                                                 id="Division" 
                                                 value="{Division}" 
                                                 editable="{= !!${fieldControl>/MaterialHeader/Division/editable} &amp;&amp; !!${ui>/isCreateMode} }" 
-                                                required="{= !!${fieldControl>/MaterialHeader/Division/required} }" />
+                                                required="{= !!${fieldControl>/MaterialHeader/Division/required} }"
+                                                showValueHelp="true" 
+                                                valueHelpRequest="onValueHelpRequest" >
+                                                <m:customData>
+                                                    <core:CustomData key="entitySet" value="DivisionVHSet" />
+                                                    <core:CustomData key="title" value="Select Division" />
+                                                    <core:CustomData key="useClientSide" value="true" />
+                                                    <core:CustomData key="keyField" value="Spart" />
+                                                    <core:CustomData key="descField" value="Vtext" />
+                                                </m:customData>
+                                                <m:layoutData><l:GridData id="GD_Division" span="XL2 L2 M2 S3"/></m:layoutData>
+                                            </m:Input>
                                         </f:FormElement>
-                                        <f:FormElement id="FC2_Fld7" label="Label Form" 
+
+                                        <f:FormElement id="FC2_FE_LabelForm" label="Label Form" 
                                                         visible="{= ${fieldControl>/MaterialHeader/LabelForm/visible} === true }">
                                             <m:Input 
                                                 id="LabelForm" 
                                                 value="{LabelForm}" 
                                                 editable="{= !!${fieldControl>/MaterialHeader/LabelForm/editable} &amp;&amp; !!${ui>/isCreateMode} }" 
-                                                required="{= !!${fieldControl>/MaterialHeader/LabelForm/required} }" />
+                                                required="{= !!${fieldControl>/MaterialHeader/LabelForm/required} }"
+                                                showValueHelp="true" 
+                                                valueHelpRequest="onValueHelpRequest" >
+                                                <m:customData>
+                                                    <core:CustomData key="entitySet" value="LabelFormVHSet" />
+                                                    <core:CustomData key="title" value="Select Label Form" />
+                                                    <core:CustomData key="useClientSide" value="true" />
+                                                    <core:CustomData key="keyField" value="Etifo" />
+                                                    <core:CustomData key="descField" value="Etitx" />
+                                                </m:customData>
+                                                <m:layoutData><l:GridData id="GD_LabelForm" span="XL2 L2 M2 S3"/></m:layoutData>
+                                            </m:Input>
                                         </f:FormElement>
-                                        <f:FormElement id="FC2_Fld8" label="Container" 
+
+                                        <f:FormElement id="FC2_FE_Container" label="Container" 
                                                         visible="{= ${fieldControl>/MaterialHeader/Container/visible} === true }">
                                             <m:Input 
                                                 id="Container" 
                                                 value="{Container}" 
                                                 editable="{= !!${fieldControl>/MaterialHeader/Container/editable} &amp;&amp; !!${ui>/isCreateMode} }" 
-                                                required="{= !!${fieldControl>/MaterialHeader/Container/required} }" />
+                                                required="{= !!${fieldControl>/MaterialHeader/Container/required} }">
+                                                <m:layoutData><l:GridData id="GD_Container" span="XL4 L4 M4 S6"/></m:layoutData>
+                                            </m:Input>
                                         </f:FormElement>
                                     </f:formElements>
                                 </f:FormContainer>
@@ -306,40 +372,82 @@
                                                 id="I12_PurValkey" 
                                                 value="{PurValkey}" 
                                                 editable="{= !!${fieldControl>/MaterialHeader/PurValkey/editable} &amp;&amp; !!${ui>/isCreateMode} }" 
-                                                required="{= !!${fieldControl>/MaterialHeader/PurValkey/required} }" />
+                                                required="{= !!${fieldControl>/MaterialHeader/PurValkey/required} }"
+                                                showValueHelp="true" 
+                                                valueHelpRequest="onValueHelpRequest" >
+                                                <m:customData>
+                                                    <core:CustomData key="entitySet" value="PurValkeyVHSet" />
+                                                    <core:CustomData key="title" value="Select Purchasing value Key" />
+                                                    <core:CustomData key="useClientSide" value="true" />
+                                                    <core:CustomData key="keyField" value="Ekwsl" />
+                                                </m:customData>
+                                                <m:layoutData><l:GridData id="GD12_PurV" span="XL3 L3 M3 S4"/></m:layoutData>
+                                            </m:Input>
                                         </f:FormElement>
+                                        
                                         <f:FormElement id="FE19_PSt" label="X-Plant Status" 
                                                         visible="{= ${fieldControl>/MaterialHeader/PurStatus/visible} === true }">
                                             <m:Input 
                                                 id="I19_PurStatus" 
                                                 value="{PurStatus}" 
                                                 editable="{= !!${fieldControl>/MaterialHeader/PurStatus/editable} &amp;&amp; !!${ui>/isCreateMode} }" 
-                                                required="{= !!${fieldControl>/MaterialHeader/PurStatus/required} }" />
+                                                required="{= !!${fieldControl>/MaterialHeader/PurStatus/required} }"
+                                                showValueHelp="true" 
+                                                valueHelpRequest="onValueHelpRequest" >
+                                                <m:customData>
+                                                    <core:CustomData key="entitySet" value="PurStatusVHSet" />
+                                                    <core:CustomData key="title" value="Select Purchasing Status" />
+                                                    <core:CustomData key="useClientSide" value="true" />
+                                                    <core:CustomData key="keyField" value="Mmsta" />
+                                                    <core:CustomData key="descField" value="Mtstb" />
+                                                </m:customData>
+                                        
+                                                <m:layoutData><l:GridData id="GD19_PSt" span="XL2 L2 M2 S3"/></m:layoutData>
+                                            </m:Input>
                                         </f:FormElement>
+                                        
                                         <f:FormElement id="FE19_SSt" label="X-DChain Status" 
                                                         visible="{= ${fieldControl>/MaterialHeader/SalStatus/visible} === true }">
                                             <m:Input 
                                                 id="I19_SalStatus" 
                                                 value="{SalStatus}" 
                                                 editable="{= !!${fieldControl>/MaterialHeader/SalStatus/editable} &amp;&amp; !!${ui>/isCreateMode} }" 
-                                                required="{= !!${fieldControl>/MaterialHeader/SalStatus/required} }" />
+                                                required="{= !!${fieldControl>/MaterialHeader/SalStatus/required} }"
+                                                showValueHelp="true" 
+                                                valueHelpRequest="onValueHelpRequest" >
+                                                <m:customData>
+                                                    <core:CustomData key="entitySet" value="SalStatusVHSet" />
+                                                    <core:CustomData key="title" value="Select Sales Status" />
+                                                    <core:CustomData key="useClientSide" value="true" />
+                                                    <core:CustomData key="keyField" value="Vmsta" />
+                                                    <core:CustomData key="descField" value="Vmstb" />
+                                                </m:customData>
+                                                <m:layoutData><l:GridData id="GD19_SSt" span="XL2 L2 M2 S3"/></m:layoutData>
+                                            </m:Input>
                                         </f:FormElement>
+                                        
                                         <f:FormElement id="FE21_MinL" label="Rem. Shelf Life" 
                                                         visible="{= ${fieldControl>/MaterialHeader/Minremlife/visible} === true }">
                                             <m:Input 
                                                 id="I21_Minremlife" 
                                                 value="{Minremlife}" 
                                                 editable="{= !!${fieldControl>/MaterialHeader/Minremlife/editable} &amp;&amp; !!${ui>/isCreateMode} }" 
-                                                required="{= !!${fieldControl>/MaterialHeader/Minremlife/required} }" />
+                                                required="{= !!${fieldControl>/MaterialHeader/Minremlife/required} }">
+                                                <m:layoutData><l:GridData id="GD21_MinL" span="XL4 L4 M4 S6"/></m:layoutData>
+                                            </m:Input>
                                         </f:FormElement>
+                                        
                                         <f:FormElement id="FE22_Shelf" label="Total Shelf Life" 
                                                         visible="{= ${fieldControl>/MaterialHeader/ShelfLife/visible} === true }">
                                             <m:Input 
                                                 id="I22_ShelfLife" 
                                                 value="{ShelfLife}" 
                                                 editable="{= !!${fieldControl>/MaterialHeader/ShelfLife/editable} &amp;&amp; !!${ui>/isCreateMode} }" 
-                                                required="{= !!${fieldControl>/MaterialHeader/ShelfLife/required} }" />
+                                                required="{= !!${fieldControl>/MaterialHeader/ShelfLife/required} }">
+                                                <m:layoutData><l:GridData id="GD22_Shelf" span="XL4 L4 M4 S6"/></m:layoutData>
+                                            </m:Input>
                                         </f:FormElement>
+                                        
                                         <f:FormElement id="FE11_Batch" label="Batch Mgmt Rqt" 
                                                         visible="{= ${fieldControl>/MaterialHeader/BatchMgmt/visible} === true }">
                                             <m:CheckBox 
@@ -455,38 +563,104 @@
                                             value="{Lotsizekey}" 
                                             editable="{= !!${fieldControl>/PlantDetails/Lotsizekey/editable} &amp;&amp; !!${ui>/isCreateMode} }" 
                                             required="{= !!${fieldControl>/PlantDetails/Lotsizekey/required} }"
-                                            visible="{= ${fieldControl>/PlantDetails/Lotsizekey/visible} === true }" />
+                                            visible="{= ${fieldControl>/PlantDetails/Lotsizekey/visible} === true }" 
+                                            showValueHelp="true" 
+                                            valueHelpRequest="onValueHelpRequest" >
+                                            <m:customData>
+                                                <core:CustomData key="entitySet" value="LotsizekeyVHSet" />
+                                                <core:CustomData key="title" value="Select Lot Size Key" />
+                                                <core:CustomData key="useClientSide" value="true" />
+                                                <core:CustomData key="keyField" value="Disls" />
+                                                <core:CustomData key="descField" value="Loslt" />
+                                            </m:customData>
+                                        </m:Input>
                                         <m:Input 
                                             id="iptMrpCtrler" 
                                             value="{MrpCtrler}" 
                                             editable="{= !!${fieldControl>/PlantDetails/MrpCtrler/editable} &amp;&amp; !!${ui>/isCreateMode} }" 
                                             required="{= !!${fieldControl>/MaterialHeader/MrpCtrler/required} }"
-                                            visible="{= ${fieldControl>/PlantDetails/MrpCtrler/visible} === true }" />
+                                            visible="{= ${fieldControl>/PlantDetails/MrpCtrler/visible} === true }" 
+                                            showValueHelp="true" 
+                                            valueHelpRequest="onValueHelpRequest" >
+                                            <m:customData>
+                                                <core:CustomData key="entitySet" value="MrpCtrlerVHSet" />
+                                                <core:CustomData key="title"     value="Select MRP Controller" />
+                                                <core:CustomData key="useClientSide" value="false" />
+                                                <core:CustomData key="keyField" value="Dispo" />
+                                                <core:CustomData key="descField" value="Dsnam" />
+                                                <core:CustomData key="parentField" value="Werks" />
+                                                <core:CustomData key="parentValuePath" value="Plant" />
+                                                <core:CustomData key="parentLabel" value="Plant" />
+                                            </m:customData>
+                                        </m:Input>
                                         <m:Input 
                                             id="iptSlocExprc" 
                                             value="{SlocExprc}" 
                                             editable="{= !!${fieldControl>/PlantDetails/SlocExprc/editable} &amp;&amp; !!${ui>/isCreateMode} }" 
                                             required="{= !!${fieldControl>/PlantDetails/SlocExprc/required} }"
-                                            visible="{= ${fieldControl>/PlantDetails/SlocExprc/visible} === true }" />
+                                            visible="{= ${fieldControl>/PlantDetails/SlocExprc/visible} === true }"
+                                            showValueHelp="true" 
+                                            valueHelpRequest="onValueHelpRequest" >
+                                            <m:customData>
+                                                <core:CustomData key="entitySet" value="SlocExprcVHSet" />
+                                                <core:CustomData key="title"     value="Store Location External Procurement" />
+                                                <core:CustomData key="useClientSide" value="false" />
+                                                <core:CustomData key="keyField" value="Lgort" />
+                                                <core:CustomData key="descField" value="Lgobe" />
+                                                <core:CustomData key="parentField" value="Werks" />
+                                                <core:CustomData key="parentValuePath" value="Plant" />
+                                                <core:CustomData key="parentLabel" value="Plant" />
+                                            </m:customData>
+                                        </m:Input>
                                         <m:Input id="iptLgpbe" value="{Lgpbe}" editable="{= !!${ui>/isCreateMode} }" />
                                         <m:Input 
                                             id="iptPurStatus" 
                                             value="{PurStatus}" 
                                             editable="{= !!${fieldControl>/PlantDetails/PurStatus/editable} &amp;&amp; !!${ui>/isCreateMode} }" 
                                             required="{= !!${fieldControl>/PlantDetails/PurStatus/required} }"
-                                            visible="{= ${fieldControl>/PlantDetails/PurStatus/visible} === true }" />
+                                            visible="{= ${fieldControl>/PlantDetails/PurStatus/visible} === true }" 
+                                            showValueHelp="true" 
+                                            valueHelpRequest="onValueHelpRequest" >
+                                            <m:customData>
+                                                <core:CustomData key="entitySet" value="PurStatusVHSet" />
+                                                <core:CustomData key="title" value="Select Purchasing Status" />
+                                                <core:CustomData key="useClientSide" value="true" />
+                                                <core:CustomData key="keyField" value="Mmsta" />
+                                                <core:CustomData key="descField" value="Mtstb" />
+                                            </m:customData>
+                                        </m:Input>
                                         <m:Input 
                                             id="iptAbcId" 
                                             value="{AbcId}" 
                                             editable="{= !!${fieldControl>/PlantDetails/AbcId/editable} &amp;&amp; !!${ui>/isCreateMode} }" 
                                             required="{= !!${fieldControl>/PlantDetails/AbcId/required} }"
-                                            visible="{= ${fieldControl>/PlantDetails/AbcId/visible} === true }" />
+                                            visible="{= ${fieldControl>/PlantDetails/AbcId/visible} === true }" 
+                                            showValueHelp="true" 
+                                            valueHelpRequest="onValueHelpRequest" >
+                                            <m:customData>
+                                                <core:CustomData key="entitySet" value="AbcIdVHSet" />
+                                                <core:CustomData key="title" value="Select ABC Indicator" />
+                                                <core:CustomData key="useClientSide" value="true" />
+                                                <core:CustomData key="keyField" value="Maabc" />
+                                                <core:CustomData key="descField" value="Tmabc" />
+                                            </m:customData>
+                                        </m:Input>
                                         <m:Input 
                                             id="iptPurGroup" 
                                             value="{PurGroup}" 
                                             editable="{= !!${fieldControl>/PlantDetails/PurGroup/editable} &amp;&amp; !!${ui>/isCreateMode} }" 
                                             required="{= !!${fieldControl>/PlantDetails/PurGroup/required} }"
-                                            visible="{= ${fieldControl>/PlantDetails/PurGroup/visible} === true }" />
+                                            visible="{= ${fieldControl>/PlantDetails/PurGroup/visible} === true }" 
+                                            showValueHelp="true" 
+                                            valueHelpRequest="onValueHelpRequest" >
+                                            <m:customData>
+                                                <core:CustomData key="entitySet" value="PurGroupVHSet" />
+                                                <core:CustomData key="title" value="Select Purchasing Group" />
+                                                <core:CustomData key="useClientSide" value="true" />
+                                                <core:CustomData key="keyField" value="Ekgrp" />
+                                                <core:CustomData key="descField" value="Eknam" />
+                                            </m:customData>
+                                        </m:Input>
                                         <m:Input 
                                             id="iptPlndDelry" 
                                             value="{PlndDelry}" 
@@ -510,7 +684,20 @@
                                             value="{Spproctype}" 
                                             editable="{= !!${fieldControl>/PlantDetails/Spproctype/editable} &amp;&amp; !!${ui>/isCreateMode} }" 
                                             required="{= !!${fieldControl>/PlantDetails/Spproctype/required} }"
-                                            visible="{= ${fieldControl>/PlantDetails/Spproctype/visible} === true }" />
+                                            visible="{= ${fieldControl>/PlantDetails/Spproctype/visible} === true }" 
+                                            showValueHelp="true" 
+                                            valueHelpRequest="onValueHelpRequest" >
+                                            <m:customData>
+                                                <core:CustomData key="entitySet" value="SpproctypeVHSet" />
+                                                <core:CustomData key="title"     value="Select Special Procurement Type" />
+                                                <core:CustomData key="useClientSide" value="false" />
+                                                <core:CustomData key="keyField" value="Sobsl" />
+                                                <core:CustomData key="descField" value="Ltext" />
+                                                <core:CustomData key="parentField" value="Werks" />
+                                                <core:CustomData key="parentValuePath" value="Plant" />
+                                                <core:CustomData key="parentLabel" value="Plant" />
+                                            </m:customData>
+                                        </m:Input>
                                         <m:Input 
                                             id="iptReorderPt" 
                                             value="{ReorderPt}" 
@@ -544,13 +731,39 @@
                                             value="{IssStLoc}" 
                                             editable="{= !!${fieldControl>/PlantDetails/IssStLoc/editable} &amp;&amp; !!${ui>/isCreateMode} }" 
                                             required="{= !!${fieldControl>/PlantDetails/IssStLoc/required} }"
-                                            visible="{= ${fieldControl>/PlantDetails/IssStLoc/visible} === true }" />
+                                            visible="{= ${fieldControl>/PlantDetails/IssStLoc/visible} === true }" 
+                                            showValueHelp="true" 
+                                            valueHelpRequest="onValueHelpRequest" >
+                                            <m:customData>
+                                                <core:CustomData key="entitySet" value="SlocExprcVHSet" />
+                                                <core:CustomData key="title"     value="Production Store Location" />
+                                                <core:CustomData key="useClientSide" value="false" />
+                                                <core:CustomData key="keyField" value="Lgort" />
+                                                <core:CustomData key="descField" value="Lgobe" />
+                                                <core:CustomData key="parentField" value="Werks" />
+                                                <core:CustomData key="parentValuePath" value="Plant" />
+                                                <core:CustomData key="parentLabel" value="Plant" />
+                                            </m:customData>
+                                        </m:Input>
                                         <m:Input 
                                             id="iptMrpGroup" 
                                             value="{MrpGroup}" 
                                             editable="{= !!${fieldControl>/PlantDetails/MrpGroup/editable} &amp;&amp; !!${ui>/isCreateMode} }" 
                                             required="{= !!${fieldControl>/PlantDetails/MrpGroup/required} }"
-                                            visible="{= ${fieldControl>/PlantDetails/MrpGroup/visible} === true }" />
+                                            visible="{= ${fieldControl>/PlantDetails/MrpGroup/visible} === true }" 
+                                            showValueHelp="true" 
+                                            valueHelpRequest="onValueHelpRequest" >
+                                            <m:customData>
+                                                <core:CustomData key="entitySet" value="MrpGroupVHSet" />
+                                                <core:CustomData key="title"     value="Select MRP Group" />
+                                                <core:CustomData key="useClientSide" value="false" />
+                                                <core:CustomData key="keyField" value="Mtart" />
+                                                <core:CustomData key="descField" value="Text40" />
+                                                <core:CustomData key="parentField" value="Werks" />
+                                                <core:CustomData key="parentValuePath" value="Plant" />
+                                                <core:CustomData key="parentLabel" value="Plant" />
+                                            </m:customData>
+                                        </m:Input>
                                     </m:cells>
                                 </m:ColumnListItem>
                             </m:items>
@@ -612,7 +825,17 @@
                                             value="{ValCat}" 
                                             editable="{= !!${fieldControl>/ValuationDetails/ValCat/editable} &amp;&amp; !!${ui>/isCreateMode} }" 
                                             required="{= !!${fieldControl>/ValuationDetails/ValCat/required} }"
-                                            visible="{= ${fieldControl>/ValuationDetails/ValCat/visible} === true }" />
+                                            visible="{= ${fieldControl>/ValuationDetails/ValCat/visible} === true }" 
+                                            showValueHelp="true" 
+                                            valueHelpRequest="onValueHelpRequest" >
+                                            <m:customData>
+                                                <core:CustomData key="entitySet" value="ValCatVHSet" />
+                                                <core:CustomData key="title" value="Select Valuation Category" />
+                                                <core:CustomData key="useClientSide" value="true" />
+                                                <core:CustomData key="keyField" value="Bwtty" />
+                                                <core:CustomData key="descField" value="Btbez" />
+                                            </m:customData>
+                                        </m:Input>
                                         <m:Input 
                                             id="iptPriceCtrl" 
                                             value="{PriceCtrl}"
@@ -647,7 +870,17 @@
                                             value="{ValClass}" 
                                             editable="{= !!${fieldControl>/ValuationDetails/ValClass/editable} &amp;&amp; !!${ui>/isCreateMode} }" 
                                             required="{= !!${fieldControl>/ValuationDetails/ValClass/required} }"
-                                            visible="{= ${fieldControl>/ValuationDetails/ValClass/visible} === true }" />
+                                            visible="{= ${fieldControl>/ValuationDetails/ValClass/visible} === true }" 
+                                            showValueHelp="true" 
+                                            valueHelpRequest="onValueHelpRequest" >
+                                            <m:customData>
+                                                <core:CustomData key="entitySet" value="ValClassVHSet" />
+                                                <core:CustomData key="title" value="Select Valuation Class" />
+                                                <core:CustomData key="useClientSide" value="true" />
+                                                <core:CustomData key="keyField" value="Bklas" />
+                                                <core:CustomData key="descField" value="Bkbez" />
+                                            </m:customData>
+                                        </m:Input>
                                     </m:cells>
                                 </m:ColumnListItem>
                             </m:items>

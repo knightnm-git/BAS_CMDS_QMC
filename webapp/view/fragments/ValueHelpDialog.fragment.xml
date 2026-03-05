@@ -10,6 +10,7 @@
         <columns>
             <Column id="Col1"><header><Text id="VHTxt1" text="Code" /></header></Column>
             <Column id="Col2"><header><Text id="VHTxt2" text="Description" /></header></Column>
+            <Column id="Col3" visible="false"><header><Text id="VHTxt3" text="" /></header></Column>
         </columns>
     </TableSelectDialog>
 </core:FragmentDefinition>

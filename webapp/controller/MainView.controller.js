@@ -310,7 +310,7 @@ sap.ui.define([
                             urlParameters: { "$top": 100 },
                             success: function (oData) {
                                 var aResults = oData.results || [];
-                                
+
                                 oView.getModel("mfrVH").setProperty("/items", aResults);
                                 oView.getModel("mfrVH").setProperty("/showMaxWarning", aResults.length >= 100);
 
@@ -362,10 +362,20 @@ sap.ui.define([
         //      <m:customData>
         //          <core:CustomData key="entitySet" value="MatGrpVHSet" />
         //          <core:CustomData key="title" value="Select Material Group" />
+        // **** Choose either client-side or server side filtering
         //          <core:CustomData key="useClientSide" value="true" />
+        // **** Parameters to indicate which is the key field and description
         //          <core:CustomData key="keyField" value="Matkl" />
         //          <core:CustomData key="descField" value="Wgbez" />
+        // **** If you want a description field also updated when a value is chosen
         //          <core:CustomData key="targetDescId" value="I4b_GrpD" />
+        // **** Parameters for when the VH is dependent on other values in the entityset
+        //          <core:CustomData key="parentField" value="Werks" />
+        //          <core:CustomData key="parentValuePath" value="Plant" />
+        //          <core:CustomData key="parentLabel" value="Plant" />
+        // **** Parameters you can add if you want to filter by some other constant
+        //          <core:CustomData key="fixedFilterField" value="Dimid" />
+        //          <core:CustomData key="fixedFilterValue" value="MASS" />
         //      </m:customData>
         //  </m:Input>
         //******************************************************//
@@ -374,44 +384,82 @@ sap.ui.define([
             this._oInputSource = oInput;
             var oView = this.getView();
             var oModel = oView.getModel();
+            var that = this;
 
             var sEntitySet = oInput.data("entitySet");
             var sTitle = oInput.data("title");
             var sKeyField = oInput.data("keyField");
             var sDescField = oInput.data("descField");
-            var bClientSide = oInput.data("useClientSide") === "true";
+            var sParentField = oInput.data("parentField");
+            var sParentValuePath = oInput.data("parentValuePath");
+            var sParentLabel = oInput.data("parentLabel");
+            var sFixedField = oInput.data("fixedFilterField");
+            var sFixedValue = oInput.data("fixedFilterValue");
 
-            // Fresh fragment every time
             var oDialog = sap.ui.xmlfragment(oView.getId(), "cos.cmds.qmc.cmdsqmc.view.fragments.ValueHelpDialog", this);
             oView.addDependent(oDialog);
             oDialog.setTitle(sTitle);
 
+            // --- STASH PARENT DATA FOR SEARCH ---
+            // We only stash if they exist to prevent errors in onValueHelpSearch
+            oDialog.data("parentField", sParentField || null);
+            if (sParentValuePath && oInput.getBindingContext()) {
+                oDialog.data("parentValue", oInput.getBindingContext().getProperty(sParentValuePath));
+            } else {
+                oDialog.data("parentValue", null);
+            }
+
             var oLocalModel = oView.getModel("localVH") || new sap.ui.model.json.JSONModel();
             if (!oView.getModel("localVH")) { oView.setModel(oLocalModel, "localVH"); }
 
-            var oItemTemplate = new sap.m.ColumnListItem({
-                cells: [
-                    new sap.m.Text({ text: "{localVH>" + sKeyField + "}" }),
-                    new sap.m.Text({ text: "{localVH>" + sDescField + "}" })
-                ]
-            });
+            var oCol2 = this.byId("Col2");
+            // Only show a description column if one was requested
+            var bHasDesc = !!sDescField; // true if sDescField is provided, false otherwise
 
-            // Bind to JSON model ONLY (stops auto-OData-refresh)
+            if (oCol2) {
+                oCol2.setVisible(bHasDesc); // Hide the column if no description field
+            }
+            // The Key or ID column will always be shown
+            var aCells = [
+                new sap.m.Text({ text: "{localVH>" + sKeyField + "}" })
+            ];
+            
+            // Only add the description cell if it exists
+            if (bHasDesc) {
+                aCells.push(new sap.m.Text({ text: "{localVH>" + sDescField + "}" }));
+            }
+            var aColumns = oDialog.getColumns();
+            // Only show 3rd (parent Field) column if we have a label and a field defined
+            if (sParentField && sParentLabel && aColumns.length > 2) {
+                aColumns[2].setVisible(true);
+                this.byId("VHTxt3").setText(sParentLabel);
+                aCells.push(new sap.m.Text({ text: "{localVH>" + sParentField + "}" }));
+            }
+
+            var oItemTemplate = new sap.m.ColumnListItem({ cells: aCells });
             oDialog.bindAggregation("items", { path: "localVH>/" + sEntitySet, template: oItemTemplate });
 
-            if (bClientSide && oLocalModel.getProperty("/" + sEntitySet)) {
-                oDialog.open();
-            } else {
-                oDialog.setBusy(true);
-                oDialog.open();
-                oModel.read("/" + sEntitySet, {
-                    success: function (oData) {
-                        oLocalModel.setProperty("/" + sEntitySet, oData.results);
-                        oDialog.setBusy(false);
-                    },
-                    error: function () { oDialog.setBusy(false); }
-                });
+            // --- INITIAL FILTERING ---
+            var aFilters = [];
+            var sStoredParentVal = oDialog.data("parentValue");
+            if (sParentField && sStoredParentVal) {
+                aFilters.push(new sap.ui.model.Filter(sParentField, sap.ui.model.FilterOperator.EQ, sStoredParentVal));
             }
+            // Handle Hardcoded/Fixed Filters
+            if (sFixedField && sFixedValue) {
+                aFilters.push(new Filter(sFixedField, FilterOperator.EQ, sFixedValue));
+            }
+            oDialog.setBusy(true);
+            oDialog.open();
+
+            oModel.read("/" + sEntitySet, {
+                filters: aFilters,
+                success: function (oData) {
+                    oLocalModel.setProperty("/" + sEntitySet, oData.results);
+                    oDialog.setBusy(false);
+                },
+                error: function () { oDialog.setBusy(false); }
+            });
         },
 
         _bindDialogToLocal: function (sEntitySet, sKeyField, sDescField) {
@@ -473,7 +521,6 @@ sap.ui.define([
         onValueHelpClose: function (oEvent) {
             oEvent.getSource().destroy();
         },
-
         onValueHelpSearch: function (oEvent) {
             var sValue = oEvent.getParameter("value");
             var oDialog = oEvent.getSource();
@@ -486,32 +533,43 @@ sap.ui.define([
             var sDescField = oInput.data("descField");
             var bClientSide = oInput.data("useClientSide") === "true";
 
+            // Retrieve the stashed plant data
+            var sParentField = oDialog.data("parentField");
+            var sParentValue = oDialog.data("parentValue");
+
+            var aFilters = [];
+
+            // Setup the Filters (Standard UI5 Filter objects)
+            // We need these for Client-Side filtering AND for the Server-Side Plant filter
+            if (sValue && bClientSide) {
+                aFilters.push(new sap.ui.model.Filter({
+                    filters: [
+                        new sap.ui.model.Filter(sKeyField, sap.ui.model.FilterOperator.Contains, sValue),
+                        new sap.ui.model.Filter(sDescField, sap.ui.model.FilterOperator.Contains, sValue)
+                    ],
+                    and: false
+                }));
+            }
+
+            if (sParentField && sParentValue) {
+                aFilters.push(new sap.ui.model.Filter(sParentField, sap.ui.model.FilterOperator.EQ, sParentValue));
+            }
+
+            // 2. Execution Logic
             if (bClientSide) {
-                // Standard local filtering for cached JSON data
-                var oBinding = oDialog.getBinding("items");
-                var aFilters = [];
-                if (sValue) {
-                    aFilters.push(new sap.ui.model.Filter({
-                        filters: [
-                            new sap.ui.model.Filter(sKeyField, sap.ui.model.FilterOperator.Contains, sValue),
-                            new sap.ui.model.Filter(sDescField, sap.ui.model.FilterOperator.Contains, sValue)
-                        ],
-                        and: false
-                    }));
-                }
-                oBinding.filter(aFilters);
+                // MRP Type Case: Filter the items already loaded in the dialog
+                oDialog.getBinding("items").filter(aFilters);
             } else {
-                // SERVER SIDE: Using the 'search' parameter for IV_SEARCH_STRING
+                // MRP Controller Case: Server-side request
                 oDialog.setBusy(true);
 
                 var mParameters = {};
                 if (sValue) {
-                    // This triggers the 'search' logic in Gateway
-                    // Resulting URL: .../EntitySet?search=xxx
-                    mParameters["search"] = sValue;
+                    mParameters["search"] = sValue; // Pass to iv_search_string
                 }
 
                 oModel.read("/" + sEntitySet, {
+                    filters: aFilters,      // Pass Parent (e.g. plant) to it_filter_select_options
                     urlParameters: mParameters,
                     success: function (oData) {
                         var oLocalModel = oView.getModel("localVH");
@@ -522,36 +580,6 @@ sap.ui.define([
                         oDialog.setBusy(false);
                     }
                 });
-            }
-        },
-
-        onValueHelpClosebackup: function (oEvent) {
-            var oSelectedItem = oEvent.getParameter("selectedItem");
-            var oInput = this._oInputSource;
-
-            if (oSelectedItem) {
-                var sKey = oSelectedItem.getTitle();
-                var sDesc = oSelectedItem.getDescription();
-
-                // Update the Main Input (The technical key)
-                oInput.setValue(sKey);
-
-                // Update the Description Field via ID (targetDescId from your XML)
-                var sTargetDescId = oInput.data("targetDescId");
-                if (sTargetDescId) {
-                    var oDescInput = this.byId(sTargetDescId);
-                    if (oDescInput) {
-                        oDescInput.setValue(sDesc);
-                    }
-                }
-
-                // 3. Update the underlying OData Model context
-                var oBinding = oInput.getBinding("value");
-                if (oBinding) {
-                    var sPath = oBinding.getPath();
-                    var oContext = oInput.getBindingContext();
-                    oContext.getModel().setProperty(sPath, sKey, oContext);
-                }
             }
         },
 
@@ -674,17 +702,11 @@ sap.ui.define([
                     this.getView().getModel("ui").setProperty("/isCreateMode", false);
 
                     MessageBox.success("Material " + sNewMaterial + " created successfully!", {
-                        actions: ["Display Material", MessageBox.Action.OK],
-                        emphasizedAction: "Display Material",
+                        actions: [MessageBox.Action.OK],
                         onClose: function (sAction) {
-                            if (sAction === "Display Material") {
-                                // Navigate to the display route (adjust 'display' to your route name)
-                                this.getOwnerComponent().getRouter().navTo("display", {
-                                    Material: sNewMaterial
-                                });
-                                //   } else {
+                           
                                 // this.onReset(); // Clear the form for the next one
-                            }
+                           
                         }.bind(this)
                     });
                 }.bind(this),
