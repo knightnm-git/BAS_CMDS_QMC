@@ -800,7 +800,7 @@ sap.ui.define([
         },
 
         onRefreshRecentTable: function () {
-            var oTable = this.byId("tblRecentMaterials");
+            var oTable = this.byId("TblRecentMaterials");
             var oBinding = oTable.getBinding("items");
             if (oBinding) {
                 oBinding.refresh();
