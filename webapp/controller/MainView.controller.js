@@ -15,6 +15,12 @@ sap.ui.define([
 
     return Controller.extend("cos.cmds.qmc.cmdsqmc.controller.MainView", {
         onInit: function () {
+            var oView = this.getView();
+            var oTable = oView.byId("TblPlantDetails");
+
+            // Register the table for message handling
+            sap.ui.getCore().getMessageManager().registerObject(oTable, true);
+
             var oModel = this.getOwnerComponent().getModel();
             var oMessageManager = sap.ui.getCore().getMessageManager();
 
@@ -423,7 +429,7 @@ sap.ui.define([
             var aCells = [
                 new sap.m.Text({ text: "{localVH>" + sKeyField + "}" })
             ];
-            
+
             // Only add the description cell if it exists
             if (bHasDesc) {
                 aCells.push(new sap.m.Text({ text: "{localVH>" + sDescField + "}" }));
@@ -684,7 +690,7 @@ sap.ui.define([
                 var oTextObj = fnSanitize(oModel.getProperty(oCtx.getPath()));
 
                 // Update the Textline with the current value from the TextArea inside the tab
-                var oTextArea = oTab.getContent()[0]; // The TextArea is the child of the Tab
+                var oTextArea = oTab.getContent()[0];
                 oTextObj.TextString = oTextArea.getValue();
 
                 return oTextObj;
@@ -704,9 +710,9 @@ sap.ui.define([
                     MessageBox.success("Material " + sNewMaterial + " created successfully!", {
                         actions: [MessageBox.Action.OK],
                         onClose: function (sAction) {
-                           
-                                // this.onReset(); // Clear the form for the next one
-                           
+
+                            // this.onReset(); // Clear the form for the next one
+
                         }.bind(this)
                     });
                 }.bind(this),
@@ -786,9 +792,28 @@ sap.ui.define([
                         template: new sap.m.MessageItem({
                             type: "{message>type}",
                             title: "{message>message}",
-                            subtitle: "{message>additionalText}",
+                            //        subtitle: "{message>additionalText}",
+                            // This subtitle logic will dynamically find the label for ANY field
+                            subtitle: {
+                                path: "message>controlIds",
+                                formatter: function (aControlIds) {
+                                    if (aControlIds && aControlIds.length > 0) {
+                                        // Get the first control associated with this error
+                                        var oControl = sap.ui.getCore().byId(aControlIds[0]);
+                                        if (oControl && oControl.getAriaLabelledBy) {
+                                            var aLabels = oControl.getAriaLabelledBy();
+                                            if (aLabels && aLabels.length > 0) {
+                                                // Get the Text/Label control from the header and return its text
+                                                var oLabel = sap.ui.getCore().byId(aLabels[0]);
+                                                return oLabel ? oLabel.getText() : "";
+                                            }
+                                        }
+                                    }
+                                    return "";
+                                }
+                            },
                             description: "{message>description}",
-                            additionalText: "{message>additionalText}"
+                            //                         additionalText: "{message>additionalText}"
                         })
                     }
                 });
